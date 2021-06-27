@@ -1,0 +1,19 @@
+.slider_wrapper{
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.slider_time_pos{
+    position: absolute;
+    width: 4px;
+    background: red;
+    height: 100%;
+    top: 0;
+    left: 20%;
+    z-index: 12;
+    cursor: pointer;
+}
+
+header {
+    background-color: rgb(33, 44, 61);
+}

@@ -1,0 +1,17 @@
+/node_modules
+/public/hot
+/public/css/app.css
+/public/storage
+/public/ffmpeg
+/storage/*.key
+/vendor
+/resources/.DS_Store
+.env
+.env.backup
+.phpunit.result.cache
+.DS_Store
+docker-compose.override.yml
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
