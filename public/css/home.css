@@ -1,3 +1,6 @@
+body {
+    background-color: rgb(15, 23, 36);
+}
 .slider_wrapper{
     position: relative;
     margin-bottom: 10px;
@@ -16,4 +19,30 @@
 
 header {
     background-color: rgb(33, 44, 61);
+}
+.bg-1 {
+    background-color: rgb(15, 23, 36);
+}
+.bg-2 {
+    background-color: rgb(34, 48, 70);
+}
+.bg-3 {
+    background-color: rgb(14, 59, 69);
+}
+.bg-4 {
+    background-color: rgb(29, 38, 54);
+}
+.color-1 {
+    color: rgb(198, 211, 231)
+}
+.color-2 {
+    color: rgb(17, 236, 229);
+}
+.color-3 {
+    color: rgb(108, 232, 228);
+}
+button, .button {
+    background-color: rgb(17, 236, 229) !important;
+    border-radius: 20px !important;
+    color: rgb(29, 38, 54) !important;
 }
