@@ -30,7 +30,7 @@
     
     @yield('styles')
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen bg-gray-50">
     <div id="app">
         @include('layouts.nav')
         @yield('content')        

@@ -43,8 +43,7 @@ Auth::routes();
 Route::post('videosStore', 'App\Http\Controllers\MediaController@saveVideo')->name('videos.store');
 Route::post('imagesStore', 'App\Http\Controllers\MediaController@saveImage')->name('images.store');
 
-Route::get('contract/{uuid}', [ContractController::class, 'customerSign'])->name('contract_link');
-Route::put('contract/{hire}',  [ContractController::class, 'store'])->name('contract.store');
+Route::post('upload_resource', 'App\Http\Controllers\ResourceController@upload')->name('upload_resource');
 
 Route::get('index', [ProjectController::class, 'index'])->name('index');
 Route::get('new_project/{project_name}', [ProjectController::class, 'create'])->name('new_project');

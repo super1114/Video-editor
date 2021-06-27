@@ -16,7 +16,7 @@ body {
     z-index: 12;
     cursor: pointer;
 }
-
+/*
 header {
     background-color: rgb(33, 44, 61);
 }
@@ -41,8 +41,34 @@ header {
 .color-3 {
     color: rgb(108, 232, 228);
 }
-button, .button {
+button {
     background-color: rgb(17, 236, 229) !important;
     border-radius: 20px !important;
     color: rgb(29, 38, 54) !important;
 }
+button:hover {
+    filter: brightness(1.15);
+    box-shadow: rgb(10 10 10 / 24%) 4px 4px 9px 3px;
+}
+.button {
+    background-color: rgb(37, 54, 78) !important;
+    color: rgb(17, 236, 229) !important;
+    cursor: pointer;
+    font-family: Nunito, Arial, Helvetica, sans-serif !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+    padding: 5px 10px !important;
+    border: none !important;
+    display: inline-flex !important;
+    box-sizing: border-box !important;
+    -webkit-box-align: center !important;
+    align-items: center !important;
+    -webkit-box-pack: center !important;
+    justify-content: center !important;
+    vertical-align: middle !important;
+    margin: 0px;
+}
+.button:hover {
+    color: rgb(29, 38, 54) !important;
+    background-color: rgb(17, 236, 229) !important;
+}*/

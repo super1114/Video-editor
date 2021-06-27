@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\Resource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 class ProjectController extends Controller
@@ -30,7 +31,9 @@ class ProjectController extends Controller
 
     public function project($hash) {
         $project = Project::where("hashkey", "=", $hash)->first();
+        $resources = Resource::where("project_id", "=", $project->id)->get();
+        //dd($resources);
         $projects = Project::orderBy("updated_at", "desc")->get();
-        return view("home", ["project_name" => $project->name, "projects" => $projects]);
+        return view("home", ["project_name" => $project->name, "project_hash" => $hash, "projects" => $projects, "resources" => $resources]);
     }
 }
