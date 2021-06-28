@@ -16,17 +16,10 @@
                     <div class="bg-white p-6">
                     <div class="sm:flex sm:items-center sm:justify-between">
                         <div class="sm:flex sm:space-x-5">
-                        <div class="flex-shrink-0">
-                        @if(Auth::user()->photo == '')
-                            <img src="{{ asset('img/default_avatar.png') }}" class="rounded-full" width="100" />
-                        @else
-                            <img src="{{ asset('storage/' . Auth::user()->photo) }}" class="rounded-full" width="100" />
-                        @endif
-                        </div>
-                        <div class="mt-3 text-center sm:mt-1 sm:pt-3 sm:text-left">
-                            <p class="text-xl font-bold text-gray-700 sm:text-1xl">{{ $project_name }}</p>
-                            <p class="text-lg font-bold text-gray-900 sm:text-4xl">WELCOME TO VIDEO EDITOR</p>
-                        </div>
+                            <div class="text-center sm:mt-1 sm:pt-1 sm:text-left">
+                                <p class="text-lg font-bold text-gray-900 sm:text-4xl mb-3">WELCOME TO VIDEO EDITOR</p>
+                                <p class="text-xl font-bold text-gray-700 sm:text-1xl">{{ $project_name }}</p>
+                            </div>
                         </div>
                         <div class="mt-5 flex justify-center sm:mt-0">
                         <a href="" class="flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 new_project">
@@ -41,6 +34,9 @@
                         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded upload_btn">
                             Upload
                         </button>
+                        <div wire:loading class="hidden w-full h-full z-50 overflow-hidden opacity-75 flex flex-col items-center justify-center uploading">
+                            <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-7 w-7"></div>
+                        </div>
                     </div>
 
                     <div class="px-6 py-5 text-sm font-medium text-center">
@@ -76,21 +72,20 @@
 
                 <section aria-labelledby="movements-title">
                     <div class="rounded-lg bg-white overflow-hidden shadow">
-                        <div class="p-6 resources">
-                            <h2 class="text-base font-medium text-gray-900" id="movements-title">Resources</h2>
-                            @forelse($resources as $resource)
-                            <div class="mt-2">
-                                <a href="" class="w-full px-2 py-1 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                                {{$resource->name}}
-                                </a>
+                        <div class="p-6">
+                            <h2 class="text-base font-medium text-gray-900 mb-3" id="movements-title">Resources</h2>
+                            <div class="grid grid-cols-2 gap-4 resources">
+                                @forelse($resources as $resource)
+                                    <div data-id="{{$resource->id}}">
+                                        <img src="{{asset($resource->thumbnail)}}" class="w-full rounded-md" />
+                                        <div class="text-center">{{ $resource->name }}</div>
+                                    </div>
+                                @empty
+                                    <div class="flex-grow w-full">
+                                        No resources
+                                    </div>
+                                @endforelse
                             </div>
-                            @empty
-                            <div class="mt-2">
-                                <a href="" class="w-full px-2 py-1  text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                                No Resources
-                                </a>
-                            </div>
-                            @endforelse
                         </div>
                     </div>
                 </section>
@@ -117,8 +112,11 @@
 
 @section('script_sections')
 <script>
-    var upload_resource_url = "{{ route('upload_resource') }}"
-    var project_hash = "{{ $project_hash }}"
+    var site_url = "{{ env('APP_URL') }}";
+    var upload_resource_url = "{{ route('upload_resource') }}";
+
+    var project_hash = "{{ $project_hash }}";
+
 </script>
 <script src="{{ asset('js/home.js') }}"></script>
 
