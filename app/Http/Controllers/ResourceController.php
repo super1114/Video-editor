@@ -22,30 +22,39 @@ class ResourceController extends Controller
     public function upload(Request $request)
     {
         $resource = $request->file("resource");
+        $mimeType = $resource->getMimeType();
         $project_hash = $request->project_hash;
         $file_name = $resource->getClientOriginalName();
         if(!file_exists("uploads/".$project_hash)){
             mkdir("uploads/".$project_hash, 0777);
         }
+
         $resource->move("uploads/".$project_hash, $file_name);
         $record = new Resource;
-        $record->name = $resource;
-        //$record->type = $resource->getMimeType();
-        if(strpos($resource->getMimeType(), "image")>0) {
-            $record->type = "image";
-            $record->thumbnail = "uploads/".$project_hash."/".$file_name;
-        } else if (strpos($resource->getMimeType(), "video")>0) {
-            $record->type = "video";
-            $thumbnails = new FFMPEG;
-            //$sss = $thumbnails->getThumbnails("uploads/".$project_hash."/".$file_name, 'thumbnails', 1);
-            //dd($sss);
-        } else {
-            $record->type = "audio";
-        }
+        $record->name = $file_name;
         $record->path = "uploads/".$project_hash."/".$file_name;
         $record->project_id = $project_hash;
-
-        return response()->json(["status"=> "success","resources"=>"zzz"]);
+        if(strpos($mimeType, "image")!==false) {
+            $record->type = "image";
+            $record->thumbnail = "uploads/".$project_hash."/".$file_name;
+        } else if (strpos($mimeType, "video")!==false) {
+            $record->type = "video";
+            $ffmpeg = FFMpeg\FFMpeg::create([
+                'ffmpeg.binaries'  => env('FFMPEG_BINARIES'),
+                'ffprobe.binaries' => env('FFPROBE_BINARIES')
+            ]);
+            $video = $ffmpeg->open($record->path);
+            $thumbnail_image =substr(Crypt::encryptString($file_name),5,10).".jpg";
+            $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(1))->save("uploads/thumbnails/".$thumbnail_image);
+            $record->thumbnail = "uploads/thumbnails/".$thumbnail_image;
+        } else {
+            $record->type = "audio";
+            $record->thumbnail = "uploads/thumbnails/audio.jpg";
+        }
+        $record->save();
+        
+        //$resources = Resource::where("project_id", "=", $project_hash)->get();
+        return response()->json(["status"=> "success","resource"=>$record]);
     }
 
     public function project($hash) {

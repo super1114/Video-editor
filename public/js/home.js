@@ -11,7 +11,13 @@ var VIDEO_EDITOR = {
             contentType: false,
             processData: false,
             success: function(data) {
-                console.log(data);
+                if(data.status=="success") {
+                    var resource = data.resource;
+                    console.log(data.resource);
+                    var origin_html = resource.name;
+                    var html = origin_html+resource.name;
+                    $(".resources").html(html);
+                }
             }
         });
     },

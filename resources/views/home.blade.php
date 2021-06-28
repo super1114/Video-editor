@@ -76,7 +76,7 @@
 
                 <section aria-labelledby="movements-title">
                     <div class="rounded-lg bg-white overflow-hidden shadow">
-                        <div class="p-6">
+                        <div class="p-6 resources">
                             <h2 class="text-base font-medium text-gray-900" id="movements-title">Resources</h2>
                             @forelse($resources as $resource)
                             <div class="mt-2">

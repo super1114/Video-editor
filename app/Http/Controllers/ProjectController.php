@@ -31,8 +31,7 @@ class ProjectController extends Controller
 
     public function project($hash) {
         $project = Project::where("hashkey", "=", $hash)->first();
-        $resources = Resource::where("project_id", "=", $project->id)->get();
-        //dd($resources);
+        $resources = Resource::where("project_id", "=", $hash)->get();
         $projects = Project::orderBy("updated_at", "desc")->get();
         return view("home", ["project_name" => $project->name, "project_hash" => $hash, "projects" => $projects, "resources" => $resources]);
     }
