@@ -20,6 +20,7 @@
         "laravel/ui": "^3.0",
         "livewire/livewire": "^2.4",
         "pbmedia/laravel-ffmpeg": "^7.5",
+        "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-permission": "^3.17",
         "webpatser/laravel-uuid": "3.0"
     },

@@ -63,5 +63,5 @@ Route::prefix('/')
 Route::get('/{any}', function(){
     return redirect()->route("welcome");
 });
-
+Route::get('qrcode', 'QRController@generateQrCode');
 

@@ -162,6 +162,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         ProtoneMedia\LaravelFFMpeg\Support\ServiceProvider::class,
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
         // Pbmedia\LaravelFFMpeg\FFMpegServiceProvider::class,
         Brian2694\Toastr\ToastrServiceProvider::class,
         /*
@@ -232,6 +233,7 @@ return [
         'FFMpeg' => ProtoneMedia\LaravelFFMpeg\Support\FFMpeg::class,
         // 'FFMpeg' => Pbmedia\LaravelFFMpeg\FFMpegFacade::class,
         'Toastr'  => Brian2694\Toastr\Facades\Toastr::class,
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class
     ],
 
 ];

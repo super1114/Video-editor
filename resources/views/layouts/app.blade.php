@@ -17,16 +17,21 @@
     
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-
+    <!-- <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+ -->
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/nouislider.min.css') }}" rel="stylesheet">
+    <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
+    <!-- <link href="{{ asset('css/nouislider.min.css') }}" rel="stylesheet">
+     -->
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/wRunner/themes/wrunner-default-theme.css') }}">
     <link href="{{ asset('css/home.css') }}" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css"> 
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
-    <script src="{{ asset('js/nouislider.min.js') }}"></script>
+    <!-- <link rel="stylesheet" href="https://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css">  -->
+    <!-- <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script> -->
+    <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
+    <script src="{{ asset('vendor/wRunner/wrunner-jquery.js') }}"></script>
+    <!-- <script src="{{ asset('js/nouislider.min.js') }}"></script> -->
     
     @yield('styles')
 </head>

@@ -37,6 +37,7 @@ class ResourceController extends Controller
         if(strpos($mimeType, "image")!==false) {
             $record->type = "image";
             $record->thumbnail = "uploads/".$project_hash."/".$file_name;
+            $record->duration = 0;
         } else if (strpos($mimeType, "video")!==false) {
             $record->type = "video";
             $ffmpeg = FFMpeg\FFMpeg::create([
@@ -44,12 +45,26 @@ class ResourceController extends Controller
                 'ffprobe.binaries' => env('FFPROBE_BINARIES')
             ]);
             $video = $ffmpeg->open($record->path);
+            $duration = FFMpeg\FFProbe::create([
+                'ffmpeg.binaries'  => env('FFMPEG_BINARIES'),
+                'ffprobe.binaries' => env('FFPROBE_BINARIES')
+            ])
+            ->format($record->path)
+            ->get('duration');
+            $record->duration = round($duration);
             $thumbnail_image =substr(Crypt::encryptString($file_name),5,10).".jpg";
             $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(1))->save("uploads/thumbnails/".$thumbnail_image);
             $record->thumbnail = "uploads/thumbnails/".$thumbnail_image;
         } else {
             $record->type = "audio";
             $record->thumbnail = "uploads/thumbnails/audio.jpg";
+            $duration = FFMpeg\FFProbe::create([
+                'ffmpeg.binaries'  => env('FFMPEG_BINARIES'),
+                'ffprobe.binaries' => env('FFPROBE_BINARIES')
+            ])
+            ->format($record->path)
+            ->get('duration');
+            $record->duration = round($duration);
         }
         $record->save();
         

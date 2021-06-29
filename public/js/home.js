@@ -1,4 +1,4 @@
-function _toggleClass(class1, class2, name) {
+function _toggleClass(class1="", class2="", name="hidden") {
     $("."+class1).toggleClass(name);
     $("."+class2).toggleClass(name);
 }
@@ -28,8 +28,14 @@ var VIDEO_EDITOR = {
     },
     makeResourceItem: function(resource) {
         var html = "";
-        html += "<div data-id="+resource.id+">";
-        html += "<img src="+site_url+"/"+resource.thumbnail+" class='w-full rounded-md' />";
+        html += "<div data-id="+resource.id+" class='relative'>";
+        html += "<a class='absolute top-3 right-3 w-5 text-center bg-red-500 hover:bg-white cursor-pointer rounded-md z-50 add_"+resource.id+" add_res_btn'>";
+        html += "<i class='icon ion-md-trash text-white hover:text-red-500'></i>";
+        html += "</a>";
+        html += "<a class='absolute top-3 right-10 w-5 text-center bg-green-600 hover:bg-white cursor-pointer rounded-md z-50 del_"+resource.id+" del_res_btn'>";
+        html += "<i class='icon ion-md-add text-white hover:text-green-600'></i>";
+        html += "</a>";
+        html += "<img src="+site_url+"/"+resource.thumbnail+" class='w-full rounded-md hover:opacity-80 z-0 res_img' data-id="+resource.id+" />";
         html += "<div class='text-center'>"+resource.name+"</div>";
         html += "</div>";
         return html;
@@ -44,14 +50,20 @@ var VIDEO_EDITOR = {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        let slider = document.getElementById("slider");
-        noUiSlider.create(slider, {
-            start: [0, 100],
-            connect: true,
-            range: {
-                'min': 0,
-                'max': 100
-            }
+        $(".slider").wRunner({
+            step: 1,
+            type: "range",
+
+            limits: {
+                minLimit: 0, 
+                maxLimit: 100
+            },
+            rangeValue: { 
+                minValue: 20, 
+                maxValue: 80 
+            },
+            roots: document.body,
+            theme: "default"
         });
     },
     initHandlers: function() {
@@ -75,6 +87,9 @@ var VIDEO_EDITOR = {
         $(".modal-close").on("click", function(e) {
             e.preventDefault();
             toggleModal();
+        });
+        $(".res_img").on("dblclick", function(e) {
+            
         })
     }
 }

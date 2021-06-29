@@ -32,7 +32,7 @@
                     <div class="px-6 py-5 text-sm font-medium text-center">
                         <input type="file" name="file" id="upload_file" style="display:none"/>
                         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded upload_btn">
-                            Upload
+                            Upload Resource
                         </button>
                         <div wire:loading class="hidden w-full h-full z-50 overflow-hidden opacity-75 flex flex-col items-center justify-center uploading">
                             <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-7 w-7"></div>
@@ -41,7 +41,7 @@
 
                     <div class="px-6 py-5 text-sm font-medium text-center">
                         <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Preview
+                            Save Project
                         </button>
                     </div>
 
@@ -59,26 +59,55 @@
                     <div class="rounded-lg bg-gray-200 overflow-hidden shadow divide-y divide-gray-200 sm:divide-y-0 sm:grid sm:grid-cols-1 sm:gap-px">
                         <video src="{{asset('mov_bbb.mp4')}}" width="100%"></video>
                     </div>
-                    <div class="slider_wrapper mt-8 w-full">
-                        <div id="slider"></div>
-                        <div class="slider_time_pos"></div>
+                    <div class="video_control mt-5 flex justify-center items-center">
+                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded preview">preview</button>
                     </div>
+                    <div class="w-full">
+                        <!-- <div class="mt-2 time_frame_text w-full h-3 flex items-center justify-between">
+                            <span class="w-full h-2">1</span>
+                            <span class="w-full h-2">2</span>
+                            <span class="w-full h-2">3</span>
+                            <span class="w-full h-2">4</span>
+                            <span class="w-full h-2">5</span>
+                            <span class="w-full h-2">6</span>
+                            <span class="w-full h-2">7</span>
+                            <span class="w-full h-2">8</span>
+                        </div>
+                        <div class="mt-2 time_frame w-full h-3 flex items-center justify-between">
+                            <span class="border-l-2 border-black w-full h-2"></span>
+                            <span class="border-l-2 border-black w-full h-2"></span>
+                            <span class="border-l-2 border-black w-full h-2"></span>
+                            <span class="border-l-2 border-black w-full h-2"></span>
+                            <span class="border-l-2 border-black w-full h-2"></span>
+                            <span class="border-l-2 border-black w-full h-2"></span>
+                            <span class="border-l-2 border-black w-full h-2"></span>
+                            <span class="border-l-2 border-black w-full h-2"></span>
+                        </div> -->
+                        <div class="slider mt-4"></div>    
+                        <div class="slider mt-4"></div>        
+                        <div class="slider mt-4"></div>        
+                    </div>
+                    
                 </section>
             </div>
 
             <!-- Right column -->
             <div class="grid grid-cols-1 gap-4">
-
-
                 <section aria-labelledby="movements-title">
                     <div class="rounded-lg bg-white overflow-hidden shadow">
                         <div class="p-6">
                             <h2 class="text-base font-medium text-gray-900 mb-3" id="movements-title">Resources</h2>
                             <div class="grid grid-cols-2 gap-4 resources">
                                 @forelse($resources as $resource)
-                                    <div data-id="{{$resource->id}}">
-                                        <img src="{{asset($resource->thumbnail)}}" class="w-full rounded-md" />
-                                        <div class="text-center">{{ $resource->name }}</div>
+                                    <div data-id="{{$resource->id}}" class="relative">
+                                        <a class="absolute top-3 right-3 w-5 text-center bg-red-500 hover:bg-white cursor-pointer rounded-md z-50 add_{{$resource->id}} add_res_btn">
+                                            <i class="icon ion-md-trash text-white hover:text-red-500"></i>
+                                        </a>
+                                        <a class="absolute top-3 right-10 w-5 text-center bg-green-600 hover:bg-white cursor-pointer rounded-md z-50 del_{{$resource->id}} del_res_btn">
+                                            <i class="icon ion-md-add text-white hover:text-green-600"></i>
+                                        </a>
+                                        <img src="{{asset($resource->thumbnail)}}" class="w-full rounded-md hover:opacity-80 z-0 res_img" data-id="{{$resource->id}}" />
+                                        <div class= "text-center">{{ $resource->name }}</div>
                                     </div>
                                 @empty
                                     <div class="flex-grow w-full">
