@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\Project;
+use App\Models\Resource;
+use Auth;
 class HomeController extends Controller
 {
     /**
@@ -23,7 +25,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $user_id = Auth::user()->id;
+        $project = Project::where("user_id", "=", $user_id)->orderBy("updated_at", "desc")->first();
+        if(empty($project)) {
+            return view("create_project");
+        }else {
+            $hash = $project->hashkey;
+            return redirect(route('project', ["hash"=>$hash]));
+        }
     }
 
 }

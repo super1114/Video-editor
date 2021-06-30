@@ -2,6 +2,7 @@ function _toggleClass(class1="", class2="", name="hidden") {
     $("."+class1).toggleClass(name);
     $("."+class2).toggleClass(name);
 }
+var slider_count = 0;
 var VIDEO_EDITOR = {
     uploadResource: function(e) {
         var resource = $('#upload_file')[0].files[0];
@@ -40,6 +41,13 @@ var VIDEO_EDITOR = {
         html += "</div>";
         return html;
     },
+    addSliderHtml: function(resource) {
+        var html = $(".slider_container").html();
+        var slider_html = "<div data-id="+resource.id+" slider_index="+slider_count+" class='slider mt-4'></div>";
+        $(".slider_container").html(html+slider_html);
+        VIDEO_EDITOR.setWRunner($("div[slider_index="+slider_count+"]"));
+        slider_count++;
+    },
     init: function() {
         this.initPlugins();
         this.initHandlers();
@@ -50,20 +58,28 @@ var VIDEO_EDITOR = {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $(".slider").wRunner({
+        VIDEO_EDITOR.setWRunner($(".slider"));
+    },
+    setWRunner: function(element) {
+        element.wRunner({
             step: 1,
             type: "range",
-
             limits: {
                 minLimit: 0, 
                 maxLimit: 100
             },
+
+            singleValue: 50,
             rangeValue: { 
                 minValue: 20, 
                 maxValue: 80 
             },
             roots: document.body,
-            theme: "default"
+
+            divisionsCount: 5,
+            valueNoteDisplay: true,
+            theme: "default",
+            direction: 'horizontal'
         });
     },
     initHandlers: function() {
@@ -90,6 +106,10 @@ var VIDEO_EDITOR = {
         });
         $(".res_img").on("dblclick", function(e) {
             
+        });
+        $(".add_res_btn").on("click", function(e) {
+            var resource = $(e.target).closest("div").data("resource");
+            VIDEO_EDITOR.addSliderHtml(resource);
         })
     }
 }

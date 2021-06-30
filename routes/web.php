@@ -22,7 +22,7 @@ use App\Http\Controllers\TCLEmailController;
 
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect(route("login"));
 })->name('welcome');
 
 
@@ -43,11 +43,6 @@ Auth::routes();
 Route::post('videosStore', 'App\Http\Controllers\MediaController@saveVideo')->name('videos.store');
 Route::post('imagesStore', 'App\Http\Controllers\MediaController@saveImage')->name('images.store');
 
-Route::post('upload_resource', 'App\Http\Controllers\ResourceController@upload')->name('upload_resource');
-
-Route::get('index', [ProjectController::class, 'index'])->name('index');
-Route::get('new_project/{project_name}', [ProjectController::class, 'create'])->name('new_project');
-Route::get('project/{hash}', [ProjectController::class, 'project'])->name('project');
 
 
 Route::get('sendMail', [TCLEmailController::class, 'sendHireEmailToCustomer'])->name('email');
@@ -56,9 +51,11 @@ Route::get('sendMail', [TCLEmailController::class, 'sendHireEmailToCustomer'])->
 Route::prefix('/')
     ->group(function () {
         Route::get('home', [HomeController::class, 'index'])->name('home');
-
-        
-    });
+        Route::post('upload_resource', 'App\Http\Controllers\ResourceController@upload')->name('upload_resource');
+        Route::get('index', [ProjectController::class, 'index'])->name('index');
+        Route::get('new_project/{project_name}', [ProjectController::class, 'create'])->name('new_project');
+        Route::get('project/{hash}', [ProjectController::class, 'project'])->name('project');
+});
 
 Route::get('/{any}', function(){
     return redirect()->route("welcome");

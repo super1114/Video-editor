@@ -83,9 +83,9 @@
                             <span class="border-l-2 border-black w-full h-2"></span>
                             <span class="border-l-2 border-black w-full h-2"></span>
                         </div> -->
-                        <div class="slider mt-4"></div>    
-                        <div class="slider mt-4"></div>        
-                        <div class="slider mt-4"></div>        
+                        <div class="slider_container">
+                                
+                        </div>
                     </div>
                     
                 </section>
@@ -99,11 +99,11 @@
                             <h2 class="text-base font-medium text-gray-900 mb-3" id="movements-title">Resources</h2>
                             <div class="grid grid-cols-2 gap-4 resources">
                                 @forelse($resources as $resource)
-                                    <div data-id="{{$resource->id}}" class="relative">
-                                        <a class="absolute top-3 right-3 w-5 text-center bg-red-500 hover:bg-white cursor-pointer rounded-md z-50 add_{{$resource->id}} add_res_btn">
+                                    <div data-resource="{{$resource}}" class="relative">
+                                        <a class="absolute top-3 right-3 w-5 text-center bg-red-500 hover:bg-white cursor-pointer rounded-md z-50 add_{{$resource->id}} del_res_btn">
                                             <i class="icon ion-md-trash text-white hover:text-red-500"></i>
                                         </a>
-                                        <a class="absolute top-3 right-10 w-5 text-center bg-green-600 hover:bg-white cursor-pointer rounded-md z-50 del_{{$resource->id}} del_res_btn">
+                                        <a class="absolute top-3 right-10 w-5 text-center bg-green-600 hover:bg-white cursor-pointer rounded-md z-50 del_{{$resource->id}} add_res_btn">
                                             <i class="icon ion-md-add text-white hover:text-green-600"></i>
                                         </a>
                                         <img src="{{asset($resource->thumbnail)}}" class="w-full rounded-md hover:opacity-80 z-0 res_img" data-id="{{$resource->id}}" />

@@ -11,35 +11,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use Notifiable;
-    use HasRoles;
-    use HasFactory;
-    use Searchable;
-
     protected $fillable = [
-        'name',
+        'username',
         'email',
         'password',
-        'user_type',
-        'jobtitle',
-        'company_id',
+        'phone',
+        'address',
     ];
-
-    protected $searchableFields = ['*'];
-
-    protected $hidden = ['password', 'remember_token'];
-
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
-    public function company()
-    {
-        return $this->belongsTo(Company::class);
-    }
-
-    public function isSuperAdmin()
-    {
-        return $this->hasRole('super-admin');
-    }
 }
