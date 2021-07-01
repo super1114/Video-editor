@@ -11,10 +11,10 @@ $(document).ready(function(){
             method: "post",
             data: $("#loginForm").serialize(),
             success: function (data) {
-                console.log(data);
+                document.location.reload();
             },
             error: function(data, error) {
-                console.log(error);
+                document.location.reload();
             }
         })
     })

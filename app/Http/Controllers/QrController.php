@@ -7,6 +7,7 @@ use App\Models\Tanker;
 use Illuminate\Http\Request;
 use App\Http\Requests\QrStoreRequest;
 use App\Http\Requests\QrUpdateRequest;
+use QRCode;
 
 class QrController extends Controller
 {
@@ -112,5 +113,9 @@ class QrController extends Controller
         return redirect()
             ->route('qrs.index')
             ->withSuccess(__('crud.common.removed'));
+    }
+
+    public function generateQrCode(Request $request) {
+        
     }
 }

@@ -4,19 +4,6 @@ function _toggleClass(class1="", class2="", name="hidden") {
 }
 var slider_count = 0;
 var VIDEO_EDITOR = {
-    isPlaying: false,
-    togglePlay: function () {
-        console.log(this.isPlaying);
-        if(this.isPlaying){
-            this.isPlaying =  false;
-            var playing_icon = "<svg xmlns='http://www.w3.org/2000/svg' class='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z' /><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 12a9 9 0 11-18 0 9 9 0 0118 0z' /></svg>";
-            $(".preview").html(playing_icon);
-        }else {
-            this.isPlaying = true;
-            var pause_icon = "<svg xmlns='http://www.w3.org/2000/svg' class='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z' /></svg>";
-            $(".preview").html(pause_icon);
-        }
-    },
     uploadResource: function(e) {
         var resource = $('#upload_file')[0].files[0];
         var formdata = new FormData();
@@ -34,27 +21,31 @@ var VIDEO_EDITOR = {
                     _toggleClass("upload_btn", "uploading", "hidden");
                     var resource = data.resource; 
                     var origin_html = $(".resources").html().search("No resources")==-1 ? $(".resources").html() : "";
-                    $(".resources").html(data.resourceHtml+origin_html);
-                    VIDEO_EDITOR.repeatHandlers();
+                    var new_html = VIDEO_EDITOR.makeResourceItem(resource);
+                    $(".resources").html(new_html+origin_html);
                 }
             }
         });
     },
+    makeResourceItem: function(resource) {
+        var html = "";
+        html += "<div data-id="+resource.id+" class='relative'>";
+        html += "<a class='absolute top-3 right-3 w-5 text-center bg-red-500 hover:bg-white cursor-pointer rounded-md z-50 add_"+resource.id+" add_res_btn'>";
+        html += "<i class='icon ion-md-trash text-white hover:text-red-500'></i>";
+        html += "</a>";
+        html += "<a class='absolute top-3 right-10 w-5 text-center bg-green-600 hover:bg-white cursor-pointer rounded-md z-50 del_"+resource.id+" del_res_btn'>";
+        html += "<i class='icon ion-md-add text-white hover:text-green-600'></i>";
+        html += "</a>";
+        html += "<img src="+site_url+"/"+resource.thumbnail+" class='w-full rounded-md hover:opacity-80 z-0 res_img' data-id="+resource.id+" />";
+        html += "<div class='text-center'>"+resource.name+"</div>";
+        html += "</div>";
+        return html;
+    },
     addSliderHtml: function(resource) {
-        $.ajax({
-            url:site_url+"/getComponent/"+resource.id,
-            method: "GET",
-            success: function(data) {
-                var org_html = $(".components").html();
-                $(".components").html(org_html+data);
-            },
-            error: function(data) {
-                console.log(data);
-            }
-        })
         var html = $(".slider_container").html();
         var slider_html = "<div data-id="+resource.id+" slider_index="+slider_count+" class='slider mt-4'></div>";
         $(".slider_container").html(html+slider_html);
+        VIDEO_EDITOR.setWRunner($("div[slider_index="+slider_count+"]"));
         slider_count++;
     },
     init: function() {
@@ -66,6 +57,29 @@ var VIDEO_EDITOR = {
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
+        });
+        //VIDEO_EDITOR.setWRunner($(".slider"));
+    },
+    setWRunner: function(element) {
+        element.wRunner({
+            step: 1,
+            type: "range",
+            limits: {
+                minLimit: 0, 
+                maxLimit: 100
+            },
+
+            singleValue: 50,
+            rangeValue: { 
+                minValue: 20, 
+                maxValue: 80 
+            },
+            roots: document.body,
+
+            divisionsCount: 5,
+            valueNoteDisplay: true,
+            theme: "default",
+            direction: 'horizontal'
         });
     },
     initHandlers: function() {
@@ -93,45 +107,8 @@ var VIDEO_EDITOR = {
         $(".res_img").on("dblclick", function(e) {
             
         });
-        $(".preview").on("click", function(e) {
-            VIDEO_EDITOR.togglePlay();
-            //$(".preview").html()
-            document.getElementById("myVideo").play();
-        })
-        $(".export_video").on("click", function(e) {
-            $.ajax({
-                url: export_video_url,
-                method: "get",
-                success: function(e) {
-
-                },
-                error: function(e) {
-
-                }
-            })
-        });
-        $(".order_btn").on("click", function(e) {
-            var pro_id = $(this).closest("tr").data("id");
-            $.ajax({
-                url: order_video_url,
-                method: "post",
-                data: {
-                    id: pro_id
-                },
-                success: function(data) {
-                    console.log(data);
-                },
-                error: function(data, error) {
-
-                }
-            })
-        })
-        VIDEO_EDITOR.repeatHandlers();
-    },
-    repeatHandlers: function() {
         $(".add_res_btn").on("click", function(e) {
             var resource = $(e.target).closest("div").data("resource");
-            
             VIDEO_EDITOR.addSliderHtml(resource);
         })
     }

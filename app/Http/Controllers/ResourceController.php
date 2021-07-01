@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Project;
 use App\Models\Resource;
+use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use FFMpeg;
@@ -67,12 +68,39 @@ class ResourceController extends Controller
             $record->duration = round($duration);
         }
         $record->save();
-        
-        //$resources = Resource::where("project_id", "=", $project_hash)->get();
-        return response()->json(["status"=> "success","resource"=>$record]);
+        return response()->json(["status"=> "success","resource"=>$record, "resourceHtml"=>view("resourceItem", ["resource"=>$record])->render()]);
     }
 
     public function project($hash) {
         
+    }
+
+    public function getComponent($resource_id) {
+        $resource = Resource::find($resource_id);
+        $project = Project::where("hashkey", "=", $resource->project_id)->first();
+        /*$obj = (object) array(
+            'minprice' => 0,
+            'maxprice' => 10000,
+            'min' => 0,
+            'max' => 10000,
+            'minthumb' => 0,
+            'maxthumb' => 0,
+        );
+        $obj->mintrigger = function() {
+            $this->minprice = min($this->minprice, $this->maxprice - 500);      
+            $this->minthumb = (($this->minprice - $this->min) / ($this->max - $this->min)) * 100;
+        };
+        $obj->maxtrigger = function() {
+            $this->maxprice = min($this->maxprice, $this->minprice + 500);      
+            $this->maxthumb = 100 -(($this->minprice - $this->min) / ($this->max - $this->min)) * 100;
+        };
+        */
+        $item = new Item;
+        $item->project_id = $project->id;
+        $item->resource_id = $resource->id;
+        $item->i_start = 0;
+        $item->i_end = $resource->duration;
+        $item->save();
+        return view("component", ["resource"=>$resource])->render();
     }
 }

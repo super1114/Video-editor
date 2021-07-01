@@ -18,6 +18,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\TCLEmailController;
 
 
@@ -55,10 +56,14 @@ Route::prefix('/')
         Route::get('index', [ProjectController::class, 'index'])->name('index');
         Route::get('new_project/{project_name}', [ProjectController::class, 'create'])->name('new_project');
         Route::get('project/{hash}', [ProjectController::class, 'project'])->name('project');
+        Route::get('export_video/{hash}', [ProjectController::class, 'export_video'])->name('export_video');
+        Route::post('order_video', [ProjectController::class, 'order_video'])->name('order_video');
+        Route::get('getComponent/{resource_id}', [ResourceController::class, 'getComponent'])->name('getComponent');
+        Route::get('qrcode', [QRController::class, 'generateQrCode'])->name('qrcode');
 });
 
 Route::get('/{any}', function(){
     return redirect()->route("welcome");
 });
-Route::get('qrcode', 'QRController@generateQrCode');
+
 

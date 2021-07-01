@@ -25,14 +25,24 @@
     <!-- <link href="{{ asset('css/nouislider.min.css') }}" rel="stylesheet">
      -->
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/wRunner/themes/wrunner-default-theme.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/fancybox/dist/jquery.fancybox.min.css') }}">
     <link href="{{ asset('css/home.css') }}" rel="stylesheet">
 
     <!-- <link rel="stylesheet" href="https://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css">  -->
-    <!-- <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script> -->
     <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
     <script src="{{ asset('vendor/wRunner/wrunner-jquery.js') }}"></script>
     <!-- <script src="{{ asset('js/nouislider.min.js') }}"></script> -->
-    
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <script src="{{ asset('vendor/fancybox/dist/jquery.fancybox.min.js') }}"></script>
+    <style>
+      input[type=range]::-webkit-slider-thumb {
+      pointer-events: all;
+      width: 24px;
+      height: 24px;
+      -webkit-appearance: none;
+      /* @apply w-6 h-6 appearance-none pointer-events-auto; */
+      }
+    </style> 
     @yield('styles')
 </head>
 <body class="min-h-screen bg-gray-50">

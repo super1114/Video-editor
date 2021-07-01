@@ -22,6 +22,7 @@
         "pbmedia/laravel-ffmpeg": "^7.5",
         "simplesoftwareio/simple-qrcode": "^4.2",
         "spatie/laravel-permission": "^3.17",
+        "tecnickcom/tc-lib-barcode": "^1.17",
         "webpatser/laravel-uuid": "3.0"
     },
     "require-dev": {

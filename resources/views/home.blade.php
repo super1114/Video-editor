@@ -3,9 +3,13 @@
 @section('content')
 
 <main class="-mt-24 pb-8">
+    @if(count($exported_videos)>0)
+        @include("products")
+    @else
+
+    @endif
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-        <h1 class="sr-only">Profile</h1>
-        <!-- Main 3 column grid -->
+        
         <div class="grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8">
             <!-- Left column -->
             <div class="grid grid-cols-1 gap-4 lg:col-span-2">
@@ -46,8 +50,8 @@
                     </div>
 
                     <div class="px-6 py-5 text-sm font-medium text-center">
-                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Export
+                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded export_video">
+                            Export Video
                         </button>
                     </div>
                     </div>
@@ -57,37 +61,24 @@
                 <!-- Actions panel -->
                 <section aria-labelledby="quick-links-title">
                     <div class="rounded-lg bg-gray-200 overflow-hidden shadow divide-y divide-gray-200 sm:divide-y-0 sm:grid sm:grid-cols-1 sm:gap-px">
-                        <video src="{{asset('mov_bbb.mp4')}}" width="100%"></video>
+                        <video width="100%" id="myVideo">
+                            <source src="{{asset('mov_bbb.mp4')}}" >
+                        </video>
                     </div>
                     <div class="video_control mt-5 flex justify-center items-center">
-                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded preview">preview</button>
+                        <button class="bg-black hover:bg-black text-white font-bold py-1 px-1 rounded preview">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </button>
                     </div>
-                    <div class="w-full">
-                        <!-- <div class="mt-2 time_frame_text w-full h-3 flex items-center justify-between">
-                            <span class="w-full h-2">1</span>
-                            <span class="w-full h-2">2</span>
-                            <span class="w-full h-2">3</span>
-                            <span class="w-full h-2">4</span>
-                            <span class="w-full h-2">5</span>
-                            <span class="w-full h-2">6</span>
-                            <span class="w-full h-2">7</span>
-                            <span class="w-full h-2">8</span>
-                        </div>
-                        <div class="mt-2 time_frame w-full h-3 flex items-center justify-between">
-                            <span class="border-l-2 border-black w-full h-2"></span>
-                            <span class="border-l-2 border-black w-full h-2"></span>
-                            <span class="border-l-2 border-black w-full h-2"></span>
-                            <span class="border-l-2 border-black w-full h-2"></span>
-                            <span class="border-l-2 border-black w-full h-2"></span>
-                            <span class="border-l-2 border-black w-full h-2"></span>
-                            <span class="border-l-2 border-black w-full h-2"></span>
-                            <span class="border-l-2 border-black w-full h-2"></span>
-                        </div> -->
-                        <div class="slider_container">
-                                
-                        </div>
+                    <div class="w-full components relative bg-gray-200">
+                        <div class="stick absolute top-0 left-0 h-full bg-red-500 w-1 z-50"></div>
+                        @foreach($items as $item)
+                            {!! $item !!}
+                        @endforeach
                     </div>
-                    
                 </section>
             </div>
 
@@ -143,6 +134,8 @@
 <script>
     var site_url = "{{ env('APP_URL') }}";
     var upload_resource_url = "{{ route('upload_resource') }}";
+    var export_video_url = "{{ route('export_video', ['hash'=>$project_hash]) }}";
+    var order_video_url = "{{ route('order_video') }}";
 
     var project_hash = "{{ $project_hash }}";
 
