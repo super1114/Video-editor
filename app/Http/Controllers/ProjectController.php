@@ -50,6 +50,7 @@ class ProjectController extends Controller
         $project->user_id = Auth::user()->id;
         $project->export_video = "";
         $project->save();
+        dd("ssss");
         return redirect(route('project', ["hash"=>$hash_key]));
     }
 
