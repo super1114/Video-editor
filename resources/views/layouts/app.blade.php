@@ -14,7 +14,8 @@
     
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    
+    <script src="{{ asset('js/app.js') }}" defer></script>
+
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
@@ -28,6 +29,7 @@
     
     <script src="{{ asset('vendor/fancybox/dist/jquery.fancybox.min.js') }}"></script>
     <script src="{{ asset('vendor/range-slider/rangeSlider.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     <style>
       input[type=range]::-webkit-slider-thumb {
       pointer-events: all;

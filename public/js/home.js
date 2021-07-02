@@ -1,3 +1,8 @@
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
 function _toggleClass(class1="", class2="", name="hidden") {
     $("."+class1).toggleClass(name);
     $("."+class2).toggleClass(name);
@@ -21,6 +26,7 @@ var VIDEO_EDITOR = {
         var resource = $('#upload_file')[0].files[0];
         var formdata = new FormData();
         formdata.append("resource", resource);
+        formdata.append("_token", $('meta[name="csrf-token"]').attr('content'));
         formdata.append("project_hash", project_hash);
         _toggleClass("upload_btn", "uploading", "hidden");
         $.ajax({
@@ -41,24 +47,25 @@ var VIDEO_EDITOR = {
         });
     },
     initItemContainer: function() {
+        console.log(items);
+        console.log(max_dur);
+        $(".items_container").html("");
         items.forEach(function(item) {
             var orghtm = $(".items_container").html();
-            var item_html = "<div class='item item_"+item.id+"'></div>";
+            var item_html = "<div class='item item_"+item.id+" w-full'></div>";
             $(".items_container").html(orghtm+item_html);
             $('.item_'+item.id).rangeSlider({ settings: false, skin: 'red', type: 'interval', scale: false });
             $('.item_'+item.id).rangeSlider({}, { step: 1, values: [item.i_start,item.i_end],min:0, max: max_dur });
         })
+        
     },
     init: function() {
         this.initPlugins();
         this.initHandlers();
     },
     initPlugins: function() {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+        console.log($('meta[name="csrf-token"]').attr('content'));
+        
         VIDEO_EDITOR.initItemContainer();
     },
     initHandlers: function() {
@@ -70,6 +77,7 @@ var VIDEO_EDITOR = {
             $("#upload_file").trigger("click");
         })
         $(".preview").on("click", function(e) {
+
             var videoDom = document.getElementById("myVideo");
             videoDom.currentTime = 3;
             videoDom.play();
@@ -110,9 +118,34 @@ var VIDEO_EDITOR = {
         })
         VIDEO_EDITOR.repeatHandlers();
     },
+    addSliderHtml: function(resource) {
+        $.ajax({
+            url: add_item_url,
+            method: "post",
+            data: {
+                items: items,
+                project_id: project_id,
+                new_item: resource,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                items.forEach(function(item) {
+                    
+                    
+                })
+                items = data.items;
+                max_dur = data.max_dur;
+                VIDEO_EDITOR.initItemContainer();
+            },
+            error: function(data, error) {
+
+            }
+        })
+    },
     repeatHandlers: function() {
         $(".add_res_btn").on("click", function(e) {
             var resource = $(e.target).closest("div").data("resource");
+            VIDEO_EDITOR.addSliderHtml(resource);
         });
         $(".del_res_btn").on("click", function(e) {
             var resource = $(e.target).closest("div").data("resource");

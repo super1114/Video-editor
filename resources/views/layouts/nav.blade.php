@@ -4,38 +4,25 @@
             <div style="width: 90%;"></div>
             <div class="hidden md:ml-4 md:flex md:items-center md:py-5 md:pr-0.5 w-1/8">
                 <!-- Profile dropdown -->
-                <div class="ml-4 relative flex-shrink-0 float-right">
+                <div class="ml-4 relative flex-shrink-0 float-right z-50">
+                    <div x-data="{ dropdownOpen: false }" class="relative">
+                      <button @click="dropdownOpen = !dropdownOpen" class="relative z-10 block rounded-md bg-white focus:outline-none">
+                        <img src="{{ asset('img/default_avatar.png') }}" class="rounded-full" width="30" />
+                      </button>
 
-                    <x-dropdown align="right" width="48">
-                        <x-slot name="trigger">
-                            <button class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
-                                <div>
-                                    <img src="{{ asset('img/default_avatar.png') }}" class="rounded-full" width="30" />
-                                </div>
-                            </button>
-                        </x-slot>
+                      <div x-show="dropdownOpen" @click="dropdownOpen = false" class="fixed inset-0 h-full w-full z-10"></div>
 
-                        <x-slot name="content">
-                            {{-- <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-
-                                <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
-                                    {{ __('Logout') }}
-                                </x-dropdown-link>
-                            </form> --}}
-                            {{-- <div class="origin-top-right z-40 absolute -right-2 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5" role="menu" aria-orientation="vertical" aria-labelledby="user-menu"> --}}
-                                
-                                {{-- <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Sign out</a> --}}
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-
-                                    <x-dropdown-link :href="route('logout')" onclick="event.preventDefault(); this.closest('form').submit();">
-                                        {{ __('Logout') }}
-                                    </x-dropdown-link>
-                                </form>
-                            {{-- </div> --}}
-                        </x-slot>
-                    </x-dropdown>
+                      <div x-show="dropdownOpen" class="absolute right-0 mt-2 py-2 w-48 bg-white rounded-md shadow-xl z-20">
+                        <a href="#" class="block px-4 py-2 text-sm capitalize text-gray-700 hover:bg-blue-500 hover:text-white">
+                          Settings
+                        </a>
+                        
+                        <a class="block px-4 py-2 text-sm capitalize text-gray-700 hover:bg-blue-500 hover:text-white" onclick="event.preventDefault(); $('#logoutForm').submit()">
+                          Sign Out
+                        <form id="logoutForm" action="{{route('logout')}}" method="post" class="hidden">@csrf</form>
+                        </a>
+                      </div>
+                    </div>
                 </div>
             </div>
             

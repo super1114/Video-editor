@@ -45,6 +45,7 @@ Route::prefix('/')
         Route::get('project/{hash}', [ProjectController::class, 'project'])->name('project');
         Route::get('export_video/{hash}', [ProjectController::class, 'export_video'])->name('export_video');
         Route::post('order_video', [ProjectController::class, 'order_video'])->name('order_video');
+        Route::post('add_item', [ProjectController::class, 'add_item'])->name('add_item');
         Route::get('getComponent/{resource_id}', [ResourceController::class, 'getComponent'])->name('getComponent');
         Route::get('qrcode', [QRController::class, 'generateQrCode'])->name('qrcode');
 });

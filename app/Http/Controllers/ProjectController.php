@@ -120,4 +120,21 @@ class ProjectController extends Controller
 
     }
 
+    public function add_item(Request $request) {
+        $project_id = $request->project_id;
+        $org_items = $request->items;
+        $new_item = $request->new_item;
+        $record = new Item;
+        $record->project_id = $project_id;
+        $record->resource_id = $new_item["id"];
+        $record->i_start = 0;
+        $record->i_end = $new_item["duration"];
+        $record->save();
+        if($org_items!=null){
+            
+        }
+        $res_items = $this->getItems($project_id);
+        return response()->json(["items"=>$res_items["items"], "max_dur" => $res_items["max_dur"]]);
+    }
+
 }

@@ -77,10 +77,8 @@
                             </svg>
                         </button>
                     </div>
-                    <div class="items_container">
+                    <div class="items_container w-full">
                         <!-- <div class="stick absolute top-0 left-0 h-full bg-red-500 w-1 z-50"></div> -->
-                        <!-- <div class="slider_item item_1"></div>
-                        <div class="slider_item item_2"></div> -->
                     </div> 
                 </section>
             </div>
@@ -94,10 +92,10 @@
                             <div class="grid grid-cols-2 gap-4 resources">
                                 @forelse($resources as $resource)
                                     <div data-resource="{{$resource}}" class="relative">
-                                        <a class="absolute top-3 right-3 w-5 text-center bg-red-500 hover:bg-white cursor-pointer rounded-md z-50 add_{{$resource->id}} del_res_btn" title="delete resource">
+                                        <a class="absolute top-3 right-3 w-5 text-center bg-red-500 hover:bg-white cursor-pointer rounded-md z-40 add_{{$resource->id}} del_res_btn" title="delete resource">
                                             <i class="icon ion-md-trash text-white hover:text-red-500"></i>
                                         </a>
-                                        <a class="absolute top-3 right-10 w-5 text-center bg-green-600 hover:bg-white cursor-pointer rounded-md z-50 del_{{$resource->id}} add_res_btn" title="add to workspace">
+                                        <a class="absolute top-3 right-10 w-5 text-center bg-green-600 hover:bg-white cursor-pointer rounded-md z-40 del_{{$resource->id}} add_res_btn" title="add to workspace">
                                             <i class="icon ion-md-add text-white hover:text-green-600"></i>
                                         </a>
                                         <img src="{{asset($resource->thumbnail)}}" class="w-full rounded-md hover:opacity-80 z-0 res_img" data-id="{{$resource->id}}" />
@@ -140,6 +138,7 @@
     var export_video_url = "{{ route('export_video', ['hash'=>$project_hash]) }}";
     var order_video_url = "{{ route('order_video') }}";
     var del_resource_url = "{{ route('del_resource') }}"
+    var add_item_url = "{{ route('add_item') }}";
     var project_hash = "{{ $project_hash }}";
     var project_id = "{{ $project_id }}";
     var items = @json($items);
