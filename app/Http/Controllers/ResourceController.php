@@ -91,19 +91,25 @@ class ResourceController extends Controller
         $record->save();
         return response()->json(["status"=> "success","resource"=>$record, "resourceHtml"=>view("resourceItem", ["resource"=>$record])->render()]);
     }
+    
+    public function getItems ($project_id) {
+        $items = Item::where("project_id", "=", $project_id)->orderBy("updated_at", "asc")->get();
+        $duration_array = array();
+        foreach($items as $item) {
+            array_push($duration_array, $item->resource->duration);
+        }
+        $max_dur = count($duration_array)>0 ? max($duration_array) : 0;
+        return array("items"=>$items, "max_dur"=>$max_dur);
+    }
 
     public function delete(Request $request) {
         $id = $request->id;
         $project_id = $request->project_id;
         Resource::find($id)->delete();
         Item::where("project_id", "=", $project_id)->where("resource_id", "=", $id)->delete();
-        $items = Item::where("project_id", "=", $project_id)->orderBy("updated_at", "asc")->get();
-        $components = array();
-        foreach($items as $item) {
-            $component = view("component", ["resource" => $item->resource])->render();
-            array_push($components, $component);
-        }
-        return response()->json(["status"=>"success", "components" => $components]);
+        $res_items = $this->getItems($project_id);
+        
+        return response()->json(["status"=>"success", "items" => $res_items["items"], "max_dur" => $res_items["max_dur"]]);
     }
 
     public function project($hash) {

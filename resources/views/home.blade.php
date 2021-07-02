@@ -80,6 +80,8 @@
                     <div class="items_container w-full">
                         <!-- <div class="stick absolute top-0 left-0 h-full bg-red-500 w-1 z-50"></div> -->
                     </div> 
+                    <div class="anchor5"></div>
+                    <div class="anchor6"></div>
                 </section>
             </div>
 

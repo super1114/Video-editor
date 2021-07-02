@@ -55,9 +55,9 @@ var VIDEO_EDITOR = {
             var item_html = "<div class='item item_"+item.id+" w-full'></div>";
             $(".items_container").html(orghtm+item_html);
             $('.item_'+item.id).rangeSlider({ settings: false, skin: 'red', type: 'interval', scale: false });
-            $('.item_'+item.id).rangeSlider({}, { step: 1, values: [item.i_start,item.i_end],min:0, max: max_dur });
+            $('.item_'+item.id).rangeSlider({}, { step: 1, values: [1,item.i_end],min:0, max: max_dur });
         })
-        
+
     },
     init: function() {
         this.initPlugins();
@@ -119,6 +119,10 @@ var VIDEO_EDITOR = {
         VIDEO_EDITOR.repeatHandlers();
     },
     addSliderHtml: function(resource) {
+        $(".anchor5").rangeSlider({ settings: false, skin: 'red', type: 'interval', scale: false });
+        $(".anchor5").rangeSlider({}, { step: 1, values: [1,9],min:0, max: 16 });
+        $(".anchor6").rangeSlider({ settings: false, skin: 'red', type: 'interval', scale: false });
+        $(".anchor6").rangeSlider({}, { step: 1, values: [1,5],min:0, max:10 });
         $.ajax({
             url: add_item_url,
             method: "post",
@@ -154,7 +158,8 @@ var VIDEO_EDITOR = {
                 method: "post",
                 data: {
                     id: resource.id,
-                    project_id: project_id
+                    project_id: project_id,
+                    _token: $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(data) {
                     if(data.status=="success") {

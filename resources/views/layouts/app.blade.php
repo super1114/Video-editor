@@ -25,11 +25,7 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/range-slider/style.css') }}">
     <link href="{{ asset('css/home.css') }}" rel="stylesheet">
 
-    <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
     
-    <script src="{{ asset('vendor/fancybox/dist/jquery.fancybox.min.js') }}"></script>
-    <script src="{{ asset('vendor/range-slider/rangeSlider.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     <style>
       input[type=range]::-webkit-slider-thumb {
       pointer-events: all;
@@ -73,6 +69,15 @@
             </div>
         </div>
     </div>
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"
+    ></script>
+    
+    <script src="{{ asset('vendor/fancybox/dist/jquery.fancybox.min.js') }}"></script>
+    
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
     <script>
         function toggleModal () {
             const body = document.querySelector('body')
@@ -82,6 +87,8 @@
             body.classList.toggle('modal-active')
         }
     </script>
+
+    <script src="{{ asset('vendor/range-slider/rangeSlider.js') }}"></script>
     @yield('script_sections')
     
     {!! Toastr::message() !!}
