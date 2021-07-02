@@ -49,8 +49,8 @@ class ProjectController extends Controller
         $project->order_status = 1;
         $project->user_id = Auth::user()->id;
         $project->export_video = "";
-        $project->save();
-        dd("ssss");
+        $xxx = $project->save();
+        dd($xxx);
         return redirect(route('project', ["hash"=>$hash_key]));
     }
 
