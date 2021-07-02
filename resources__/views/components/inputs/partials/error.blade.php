@@ -1,1 +1,0 @@
-<p class="text-red-600" role="alert">{{ $message }}</p>
