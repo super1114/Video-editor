@@ -2,6 +2,7 @@
 /public/hot
 /public/storage
 /public/ffmpeg
+/public/uploads
 /storage/*.key
 /vendor
 /resources/.DS_Store
