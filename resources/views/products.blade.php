@@ -3,7 +3,7 @@
     <table class="mb-4 w-full bg-blue-200 table-auto rounded-lg">
         <thead>
             <tr class="bg-blue-600">
-                <td class="border text-center px-2 py-2">No</td>
+                <td class="border text-center px-2 py-2 text-white">No</td>
                 <td class="border text-center px-2 py-2">Video</td>
                 <td class="border text-center px-2 py-2">QR code</td>
                 <td class="border text-center px-2 py-2">Product Status</td>

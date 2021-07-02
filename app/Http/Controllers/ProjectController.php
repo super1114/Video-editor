@@ -16,12 +16,28 @@ class ProjectController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function __construct()
-    {
+    public $range;
+
+    public function __construct() {
+        $obj = (object) array(
+            'minprice' => 0,
+            'maxprice' => 10000,
+            'min' => 0,
+            'max' => 10000,
+            'minthumb' => 0,
+            'maxthumb' => 0,
+        );
+        $obj->mintrigger = function() {
+            $this->minprice = min($this->minprice, $this->maxprice);      
+            $this->minthumb = (($this->minprice - $this->min) / ($this->max - $this->min)) * 100;
+        };
+        $obj->maxtrigger = function() {
+            $this->maxprice = min($this->maxprice, $this->minprice);      
+            $this->maxthumb = 100 -(($this->minprice - $this->min) / ($this->max - $this->min)) * 100;
+        };
+        $this->range = $obj;
         $this->middleware('auth');
     }
-
-
     
     public function create(Request $request, $project_name)
     {
@@ -37,27 +53,35 @@ class ProjectController extends Controller
         return redirect(route('project', ["hash"=>$hash_key]));
     }
 
+    public function getItems ($project_id) {
+        $items = Item::where("project_id", "=", $project_id)->orderBy("updated_at", "asc")->get();
+        $duration_array = array();
+        foreach($items as $item) {
+            array_push($duration_array, $item->resource->duration);
+        }
+        $max_dur = count($duration_array)>0 ? max($duration_array) : 0;
+        return array("items"=>$items, "max_dur"=>$max_dur);
+    }
+
     public function project($hash) {
         $user_id = Auth::user()->id;
+        $user = Auth::user();
         $project = Project::where("hashkey", "=", $hash)->first();
         $resources = Resource::where("project_id", "=", $hash)->get();
         $projects = Project::where("user_id", "=", $user_id)->orderBy("updated_at", "desc")->get();
-        $items = Item::where("project_id", "=", $project->id)->orderBy("updated_at", "asc")->get();
-        $components = array();
-        foreach($items as $item) {
-            $component = view("component", ["resource" => $item->resource])->render();
-            array_push($components, $component);
-        }
-        //dd($components);
+        //$items = Item::where("project_id", "=", $project->id)->orderBy("updated_at", "asc")->get();
+        $array = $this->getItems($project->id);
+        $items = $array["items"];
+        $max_dur = $array["max_dur"];
         $exported_videos = Project::where("user_id", "=", $user_id)->where("export_video", "!=", "")->get();
-        return view("home", [
-            "project_name" => $project->name, 
-            "project_hash" => $hash, 
-            "projects" => $projects, 
-            "resources" => $resources,
-            "exported_videos" => $exported_videos,
-            "items" => $components
-        ]);
+        $project_name = $project->name;
+        $project_id = $project->id;
+        $project_hash = $hash;
+        return view("home", compact("project_name", "project_id", "project_hash", "projects", "resources" , "exported_videos", "items", "user", "max_dur"));
+    }
+
+    public function new_project_page(Request $request) {
+        return view("create_project");
     }
 
     public function export_video($hash) {

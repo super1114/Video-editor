@@ -14,6 +14,27 @@ class ResourceController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
+    public $range;
+
+    public function __construct() {
+        $obj = (object) array(
+            'minprice' => 0,
+            'maxprice' => 10000,
+            'min' => 0,
+            'max' => 10000,
+            'minthumb' => 0,
+            'maxthumb' => 0,
+        );
+        $obj->mintrigger = function() {
+            $this->minprice = min($this->minprice, $this->maxprice);      
+            $this->minthumb = (($this->minprice - $this->min) / ($this->max - $this->min)) * 100;
+        };
+        $obj->maxtrigger = function() {
+            $this->maxprice = min($this->maxprice, $this->minprice);      
+            $this->maxthumb = 100 -(($this->minprice - $this->min) / ($this->max - $this->min)) * 100;
+        };
+        $this->range = $obj;
+    }
     public function index(Request $request)
     {
 
@@ -71,6 +92,20 @@ class ResourceController extends Controller
         return response()->json(["status"=> "success","resource"=>$record, "resourceHtml"=>view("resourceItem", ["resource"=>$record])->render()]);
     }
 
+    public function delete(Request $request) {
+        $id = $request->id;
+        $project_id = $request->project_id;
+        Resource::find($id)->delete();
+        Item::where("project_id", "=", $project_id)->where("resource_id", "=", $id)->delete();
+        $items = Item::where("project_id", "=", $project_id)->orderBy("updated_at", "asc")->get();
+        $components = array();
+        foreach($items as $item) {
+            $component = view("component", ["resource" => $item->resource])->render();
+            array_push($components, $component);
+        }
+        return response()->json(["status"=>"success", "components" => $components]);
+    }
+
     public function project($hash) {
         
     }
@@ -78,29 +113,13 @@ class ResourceController extends Controller
     public function getComponent($resource_id) {
         $resource = Resource::find($resource_id);
         $project = Project::where("hashkey", "=", $resource->project_id)->first();
-        /*$obj = (object) array(
-            'minprice' => 0,
-            'maxprice' => 10000,
-            'min' => 0,
-            'max' => 10000,
-            'minthumb' => 0,
-            'maxthumb' => 0,
-        );
-        $obj->mintrigger = function() {
-            $this->minprice = min($this->minprice, $this->maxprice - 500);      
-            $this->minthumb = (($this->minprice - $this->min) / ($this->max - $this->min)) * 100;
-        };
-        $obj->maxtrigger = function() {
-            $this->maxprice = min($this->maxprice, $this->minprice + 500);      
-            $this->maxthumb = 100 -(($this->minprice - $this->min) / ($this->max - $this->min)) * 100;
-        };
-        */
+        
         $item = new Item;
         $item->project_id = $project->id;
         $item->resource_id = $resource->id;
         $item->i_start = 0;
         $item->i_end = $resource->duration;
         $item->save();
-        return view("component", ["resource"=>$resource])->render();
+        return view("component", ["resource"=>$resource, "range"=>$this->range])->render();
     }
 }

@@ -10,30 +10,24 @@
 
     <title>VIDEO EDITOR</title>
 
-    <!-- Scripts -->
-    <script>
-        var uploadUrl = "{{route('videos.store')}}"
-    </script>
+    
     
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <!-- <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
- -->
+    
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
-    <!-- <link href="{{ asset('css/nouislider.min.css') }}" rel="stylesheet">
-     -->
-    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/wRunner/themes/wrunner-default-theme.css') }}">
+    
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/fancybox/dist/jquery.fancybox.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/range-slider/rangeSlider.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/range-slider/style.css') }}">
     <link href="{{ asset('css/home.css') }}" rel="stylesheet">
 
-    <!-- <link rel="stylesheet" href="https://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css">  -->
     <script src="{{ asset('js/jquery-3.2.1.min.js') }}"></script>
-    <script src="{{ asset('vendor/wRunner/wrunner-jquery.js') }}"></script>
-    <!-- <script src="{{ asset('js/nouislider.min.js') }}"></script> -->
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    
     <script src="{{ asset('vendor/fancybox/dist/jquery.fancybox.min.js') }}"></script>
+    <script src="{{ asset('vendor/range-slider/rangeSlider.js') }}"></script>
     <style>
       input[type=range]::-webkit-slider-thumb {
       pointer-events: all;

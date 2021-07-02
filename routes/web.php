@@ -28,33 +28,20 @@ Route::get('/', function () {
 
 
 
-Route::get('/newhiremockup', function () {
-    return view('newbooking');
-});
 
-Route::get('/checkoutmockup', function () {
-    return view('checkout');
-});
-Route::get('/rigid', function () {
-    return view('rigid');
-});
 
 Auth::routes();
-
-Route::post('videosStore', 'App\Http\Controllers\MediaController@saveVideo')->name('videos.store');
-Route::post('imagesStore', 'App\Http\Controllers\MediaController@saveImage')->name('images.store');
-
-
-
-Route::get('sendMail', [TCLEmailController::class, 'sendHireEmailToCustomer'])->name('email');
+//Route::get('sendMail', [TCLEmailController::class, 'sendHireEmailToCustomer'])->name('email');
 
 
 Route::prefix('/')
     ->group(function () {
         Route::get('home', [HomeController::class, 'index'])->name('home');
         Route::post('upload_resource', 'App\Http\Controllers\ResourceController@upload')->name('upload_resource');
+        Route::post('delete_resource', 'App\Http\Controllers\ResourceController@delete')->name('del_resource');
         Route::get('index', [ProjectController::class, 'index'])->name('index');
         Route::get('new_project/{project_name}', [ProjectController::class, 'create'])->name('new_project');
+        Route::get('new_project_page', [ProjectController::class, 'new_project_page'])->name('new_project_page');
         Route::get('project/{hash}', [ProjectController::class, 'project'])->name('project');
         Route::get('export_video/{hash}', [ProjectController::class, 'export_video'])->name('export_video');
         Route::post('order_video', [ProjectController::class, 'order_video'])->name('order_video');

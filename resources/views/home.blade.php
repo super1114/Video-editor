@@ -26,7 +26,7 @@
                             </div>
                         </div>
                         <div class="mt-5 flex justify-center sm:mt-0">
-                        <a href="" class="flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 new_project">
+                        <a href="{{route('new_project_page')}}" class="flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                             New Project
                         </a>
                         </div>
@@ -61,9 +61,13 @@
                 <!-- Actions panel -->
                 <section aria-labelledby="quick-links-title">
                     <div class="rounded-lg bg-gray-200 overflow-hidden shadow divide-y divide-gray-200 sm:divide-y-0 sm:grid sm:grid-cols-1 sm:gap-px">
+                        @if(count($items)>0)
                         <video width="100%" id="myVideo">
                             <source src="{{asset('mov_bbb.mp4')}}" >
                         </video>
+                        @else
+                        <img src="{{asset('img/blank1.jpg')}}" class="w-full"/>
+                        @endif
                     </div>
                     <div class="video_control mt-5 flex justify-center items-center">
                         <button class="bg-black hover:bg-black text-white font-bold py-1 px-1 rounded preview">
@@ -73,12 +77,11 @@
                             </svg>
                         </button>
                     </div>
-                    <div class="w-full components relative bg-gray-200">
-                        <div class="stick absolute top-0 left-0 h-full bg-red-500 w-1 z-50"></div>
-                        @foreach($items as $item)
-                            {!! $item !!}
-                        @endforeach
-                    </div>
+                    <div class="items_container">
+                        <!-- <div class="stick absolute top-0 left-0 h-full bg-red-500 w-1 z-50"></div> -->
+                        <!-- <div class="slider_item item_1"></div>
+                        <div class="slider_item item_2"></div> -->
+                    </div> 
                 </section>
             </div>
 
@@ -91,10 +94,10 @@
                             <div class="grid grid-cols-2 gap-4 resources">
                                 @forelse($resources as $resource)
                                     <div data-resource="{{$resource}}" class="relative">
-                                        <a class="absolute top-3 right-3 w-5 text-center bg-red-500 hover:bg-white cursor-pointer rounded-md z-50 add_{{$resource->id}} del_res_btn">
+                                        <a class="absolute top-3 right-3 w-5 text-center bg-red-500 hover:bg-white cursor-pointer rounded-md z-50 add_{{$resource->id}} del_res_btn" title="delete resource">
                                             <i class="icon ion-md-trash text-white hover:text-red-500"></i>
                                         </a>
-                                        <a class="absolute top-3 right-10 w-5 text-center bg-green-600 hover:bg-white cursor-pointer rounded-md z-50 del_{{$resource->id}} add_res_btn">
+                                        <a class="absolute top-3 right-10 w-5 text-center bg-green-600 hover:bg-white cursor-pointer rounded-md z-50 del_{{$resource->id}} add_res_btn" title="add to workspace">
                                             <i class="icon ion-md-add text-white hover:text-green-600"></i>
                                         </a>
                                         <img src="{{asset($resource->thumbnail)}}" class="w-full rounded-md hover:opacity-80 z-0 res_img" data-id="{{$resource->id}}" />
@@ -136,9 +139,12 @@
     var upload_resource_url = "{{ route('upload_resource') }}";
     var export_video_url = "{{ route('export_video', ['hash'=>$project_hash]) }}";
     var order_video_url = "{{ route('order_video') }}";
-
+    var del_resource_url = "{{ route('del_resource') }}"
     var project_hash = "{{ $project_hash }}";
-
+    var project_id = "{{ $project_id }}";
+    var items = @json($items);
+    var max_dur = "{{ $max_dur }}";
+    
 </script>
 <script src="{{ asset('js/home.js') }}"></script>
 

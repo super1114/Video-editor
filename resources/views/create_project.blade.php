@@ -26,7 +26,7 @@
     <body >
         <div class="min-h-screen flex flex-col items-center justify-center bg-gray-300">
           <div class="flex flex-col bg-white shadow-md px-4 sm:px-6 md:px-8 lg:px-10 py-8 rounded-md w-full max-w-md">
-            <div class="font-medium self-center text-xl sm:text-2xl uppercase text-gray-800">Create Your First Project</div>
+            <div class="font-medium self-center text-xl sm:text-2xl uppercase text-gray-800">Create Your Video Project</div>
             <div class="relative mt-10 h-px bg-gray-300">
               <div class="absolute left-0 top-0 flex justify-center w-full -mt-2">
                 <span class="bg-white px-4 text-xs text-gray-500 uppercase">Create a perfect video.</span>

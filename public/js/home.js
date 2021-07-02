@@ -40,22 +40,14 @@ var VIDEO_EDITOR = {
             }
         });
     },
-    addSliderHtml: function(resource) {
-        $.ajax({
-            url:site_url+"/getComponent/"+resource.id,
-            method: "GET",
-            success: function(data) {
-                var org_html = $(".components").html();
-                $(".components").html(org_html+data);
-            },
-            error: function(data) {
-                console.log(data);
-            }
+    initItemContainer: function() {
+        items.forEach(function(item) {
+            var orghtm = $(".items_container").html();
+            var item_html = "<div class='item item_"+item.id+"'></div>";
+            $(".items_container").html(orghtm+item_html);
+            $('.item_'+item.id).rangeSlider({ settings: false, skin: 'red', type: 'interval', scale: false });
+            $('.item_'+item.id).rangeSlider({}, { step: 1, values: [item.i_start,item.i_end],min:0, max: max_dur });
         })
-        var html = $(".slider_container").html();
-        var slider_html = "<div data-id="+resource.id+" slider_index="+slider_count+" class='slider mt-4'></div>";
-        $(".slider_container").html(html+slider_html);
-        slider_count++;
     },
     init: function() {
         this.initPlugins();
@@ -67,18 +59,9 @@ var VIDEO_EDITOR = {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+        VIDEO_EDITOR.initItemContainer();
     },
     initHandlers: function() {
-        $(".new_project").on("click", function(e) {
-            e.preventDefault();
-            toggleModal();
-        });
-    
-        $(".create_project_btn").on("click", function(e) {
-            var project_name = $("#project_name").val();
-            if(project_name==""||project_name==null) return;
-            document.location.href = "/new_project/"+project_name 
-        });
         $("#upload_file").on("change", function(e) {
             VIDEO_EDITOR.uploadResource(e);
         })
@@ -86,17 +69,16 @@ var VIDEO_EDITOR = {
             e.preventDefault();
             $("#upload_file").trigger("click");
         })
-        $(".modal-close").on("click", function(e) {
-            e.preventDefault();
-            toggleModal();
-        });
-        $(".res_img").on("dblclick", function(e) {
-            
-        });
         $(".preview").on("click", function(e) {
-            VIDEO_EDITOR.togglePlay();
-            //$(".preview").html()
-            document.getElementById("myVideo").play();
+            var videoDom = document.getElementById("myVideo");
+            videoDom.currentTime = 3;
+            videoDom.play();
+            videoDom.ontimeupdate = function(e) {
+                if(videoDom.currentTime>6) {
+                    videoDom.pause();
+                }
+            }
+            console.log(videoDom.currentTime);
         })
         $(".export_video").on("click", function(e) {
             $.ajax({
@@ -131,8 +113,22 @@ var VIDEO_EDITOR = {
     repeatHandlers: function() {
         $(".add_res_btn").on("click", function(e) {
             var resource = $(e.target).closest("div").data("resource");
-            
-            VIDEO_EDITOR.addSliderHtml(resource);
+        });
+        $(".del_res_btn").on("click", function(e) {
+            var resource = $(e.target).closest("div").data("resource");
+            $.ajax({
+                url:del_resource_url,
+                method: "post",
+                data: {
+                    id: resource.id,
+                    project_id: project_id
+                },
+                success: function(data) {
+                    if(data.status=="success") {
+                        $(".components").html(data.components.join(""));
+                    }
+                }
+            })
         })
     }
 }
