@@ -36,7 +36,7 @@ Auth::routes();
 
 Route::prefix('/')
     ->group(function () {
-        Route::get('home', [HomeController::class, 'index'])->name('home');
+        Route::any('home', [HomeController::class, 'index'])->name('home');
         Route::post('upload_resource', 'App\Http\Controllers\ResourceController@upload')->name('upload_resource');
         Route::post('delete_resource', 'App\Http\Controllers\ResourceController@delete')->name('del_resource');
         Route::get('index', [ProjectController::class, 'index'])->name('index');
