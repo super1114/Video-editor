@@ -42,10 +42,12 @@ Route::prefix('/')
         Route::get('index', [ProjectController::class, 'index'])->name('index');
         Route::get('new_project/{project_name}', [ProjectController::class, 'create'])->name('new_project');
         Route::get('new_project_page', [ProjectController::class, 'new_project_page'])->name('new_project_page');
+        Route::get('my_projects', [ProjectController::class, 'my_projects'])->name('my_projects');
         Route::get('project/{hash}', [ProjectController::class, 'project'])->name('project');
-        Route::get('export_video/{hash}', [ProjectController::class, 'export_video'])->name('export_video');
+        Route::post('export_video/{hash}', [ProjectController::class, 'export_video'])->name('export_video');
         Route::post('order_video', [ProjectController::class, 'order_video'])->name('order_video');
         Route::post('add_item', [ProjectController::class, 'add_item'])->name('add_item');
+        Route::post('save_item', [ProjectController::class, 'save_item'])->name('save_item');
         Route::get('getComponent/{resource_id}', [ResourceController::class, 'getComponent'])->name('getComponent');
         Route::get('qrcode', [QRController::class, 'generateQrCode'])->name('qrcode');
 });

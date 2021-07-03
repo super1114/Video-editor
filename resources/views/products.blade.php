@@ -1,5 +1,5 @@
 <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-    <h1 class="text-xl font-bold text-white sm:text-1xl mb-4">Your projects</h1>
+    <h1 class="text-xl font-bold text-black sm:text-1xl mb-4">Your projects</h1>
     <table class="mb-4 w-full bg-blue-200 table-auto rounded-lg">
         <thead>
             <tr class="bg-blue-600">

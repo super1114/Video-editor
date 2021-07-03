@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Auth;
 use Mail;
+use FFMpeg;
 
 class ProjectController extends Controller
 {
@@ -73,22 +74,49 @@ class ProjectController extends Controller
         $array = $this->getItems($project->id);
         $items = $array["items"];
         $max_dur = $array["max_dur"];
-        $exported_videos = Project::where("user_id", "=", $user_id)->where("export_video", "!=", "")->get();
+        
         $project_name = $project->name;
         $project_id = $project->id;
         $project_hash = $hash;
-        return view("home", compact("project_name", "project_id", "project_hash", "projects", "resources" , "exported_videos", "items", "user", "max_dur"));
+        return view("home", compact("project_name", "project_id", "project_hash", "projects", "resources" , "items", "user", "max_dur"));
     }
 
     public function new_project_page(Request $request) {
         return view("create_project");
     }
 
-    public function export_video($hash) {
+    public function export_video(Request $request, $hash) {
+        $items = $request->items;
+        
+        $ffmpeg = FFMpeg\FFMpeg::create([
+            'ffmpeg.binaries'  => env('FFMPEG_BINARIES'),
+            'ffprobe.binaries' => env('FFPROBE_BINARIES')
+        ]);
+        $video = $ffmpeg->open(public_path()."/".$items[0]["resource"]["path"]);
+        $clip = $video->clip(FFMpeg\Coordinate\TimeCode::fromSeconds(1), FFMpeg\Coordinate\TimeCode::fromSeconds(5));
+        $format = new FFMpeg\Format\Video\X264('aac', 'libx264');
+        $clip->save($format, public_path()."/"."video.avi");
+        foreach($items as $item) {
+            dd("ffmpeg -i ".public_path()."/".$item["resource"]["path"]." -ss 00:00:00 -codec copy -t ".($item["i_end"]-$item["i_start"])." ".public_path()."/uploads/temp/".$item["id"].".mp4");
+            //exec("ffmpeg -i ".public_path()."/".$item["resource"]["path"]." -ss 00:00:00 -codec copy -t ".($item["i_end"]-$item["i_start"])." ".public_path()."/uploads/temp/".$item["id"].".mp4");
+        }
+        exec("ffmpeg -i ".public_path()."/video/".$timestamp.$filename." ".public_path()."/video/new_".$timestamp.$filename);
+        
+
+        //$video->concat(array($v1,$v2,$v3))->saveFromSameCodecs($newFile, TRUE);
+
+
+
+        /*foreach($items as $item) {
+            $video = $ffmpeg->open($item["resource"]["path"]);
+
+        }
+        $video = $ffmpeg->open($record->path);
+        $video->
         $project = Project::where("hashkey", "=", $hash)->first();
         $project->qrcode = $this->generateQRCode($project->hashkey);
         $project->export_video = "sssfffddd";
-        $project->save();
+        $project->save();*/
     }
 
     public function generateQRCode($hashkey) {
@@ -129,12 +157,31 @@ class ProjectController extends Controller
         $record->resource_id = $new_item["id"];
         $record->i_start = 0;
         $record->i_end = $new_item["duration"];
-        $record->save();
+        
         if($org_items!=null){
-            
+            foreach($org_items as $oItem) {
+                Item::where("project_id", "=", $oItem["project_id"])
+                    ->where("resource_id", "=", $oItem["resource_id"])
+                    ->update(array('i_start' => $oItem["i_start"], 'i_end' => $oItem["i_end"]));
+            }
         }
+        $record->save();
         $res_items = $this->getItems($project_id);
         return response()->json(["items"=>$res_items["items"], "max_dur" => $res_items["max_dur"]]);
     }
+    public function save_item(Request $request) {
+        foreach($request->items as $item) {
+            $record = Item::find($item["id"]);
+            $record->i_start = $item["i_start"];
+            $record->i_end = $item["i_end"];
+            $record->save();
+        }
+        return response()->json(["status"=>"success"]);
+    }
 
+    public function my_projects(Request $reqeust) {
+        $user_id = Auth::user()->id;
+        $exported_videos = Project::where("user_id", "=", $user_id)->where("export_video", "!=", "")->get();
+        return view("my_projects", compact("exported_videos"));
+    }
 }

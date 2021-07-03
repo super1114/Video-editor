@@ -2,65 +2,35 @@
 
 @section('content')
 
-<main class="-mt-24 pb-8">
-    @if(count($exported_videos)>0)
-        @include("products")
-    @else
-
-    @endif
+<main class="mt-10 pb-8">
+    <input type="file" name="file" id="upload_file" style="display:none"/>
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-        
+        <div class="flex items-start justify-between">
+            <h5 class="text-2xl font-bold leading-normal mt-0 mb-2 text-gray-800 w-5/6">
+              {{$project_name}}
+            </h5>
+            <button class="text-pink-500 bg-transparent border border-solid border-pink-500 hover:bg-pink-500 hover:text-white active:bg-pink-600 font-bold uppercase text-xs px-4 py-2 rounded-full outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 upload_btn" type="button"
+                  >
+              Upload
+            </button>
+            <button class="text-teal-500 bg-transparent border border-solid border-teal-500 hover:bg-green-500 hover:text-white active:bg-teal-600 font-bold uppercase text-xs px-4 py-2 rounded-full outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 export_video" type="button"
+                  >
+              Export
+            </button>
+        </div>
+     
         <div class="grid grid-cols-1 gap-4 items-start lg:grid-cols-3 lg:gap-8">
             <!-- Left column -->
             <div class="grid grid-cols-1 gap-4 lg:col-span-2">
-                <!-- Welcome panel -->
-                <section aria-labelledby="profile-overview-title">
-                <div class="rounded-lg bg-white overflow-hidden shadow">
-                    <h2 class="sr-only" id="profile-overview-title">Profile Overview</h2>
-                    <div class="bg-white p-6">
-                    <div class="sm:flex sm:items-center sm:justify-between">
-                        <div class="sm:flex sm:space-x-5">
-                            <div class="text-center sm:mt-1 sm:pt-1 sm:text-left">
-                                <p class="text-lg font-bold text-gray-900 sm:text-4xl mb-3">WELCOME TO VIDEO EDITOR</p>
-                                <p class="text-xl font-bold text-gray-700 sm:text-1xl">{{ $project_name }}</p>
-                            </div>
-                        </div>
-                        <div class="mt-5 flex justify-center sm:mt-0">
-                        <a href="{{route('new_project_page')}}" class="flex justify-center items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                            New Project
-                        </a>
-                        </div>
-                    </div>
-                    </div>
-                    <div class="border-t border-gray-200 bg-gray-50 grid grid-cols-1 divide-y divide-gray-200 sm:grid-cols-3 sm:divide-y-0 sm:divide-x">
-                    <div class="px-6 py-5 text-sm font-medium text-center">
-                        <input type="file" name="file" id="upload_file" style="display:none"/>
-                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded upload_btn">
-                            Upload Resource
-                        </button>
-                        <div wire:loading class="hidden w-full h-full z-50 overflow-hidden opacity-75 flex flex-col items-center justify-center uploading">
-                            <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-7 w-7"></div>
-                        </div>
-                    </div>
-
-                    <div class="px-6 py-5 text-sm font-medium text-center">
-                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Save Project
-                        </button>
-                    </div>
-
-                    <div class="px-6 py-5 text-sm font-medium text-center">
-                        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded export_video">
-                            Export Video
-                        </button>
-                    </div>
-                    </div>
-                </div>
-                </section>
-
                 <!-- Actions panel -->
                 <section aria-labelledby="quick-links-title">
-                    <div class="rounded-lg bg-gray-200 overflow-hidden shadow divide-y divide-gray-200 sm:divide-y-0 sm:grid sm:grid-cols-1 sm:gap-px">
+                    <div class="relative rounded-lg bg-gray-200 overflow-hidden shadow divide-y divide-gray-200 sm:divide-y-0 sm:grid sm:grid-cols-1 sm:gap-px">
+                        <button class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded-full preview z-50">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </button>
                         @if(count($items)>0)
                         <video width="100%" id="myVideo">
                             <source src="{{asset('mov_bbb.mp4')}}" >
@@ -69,19 +39,9 @@
                         <img src="{{asset('img/blank1.jpg')}}" class="w-full"/>
                         @endif
                     </div>
-                    <div class="video_control mt-5 flex justify-center items-center">
-                        <button class="bg-black hover:bg-black text-white font-bold py-1 px-1 rounded preview">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </button>
-                    </div>
                     <div class="items_container w-full">
-                        <!-- <div class="stick absolute top-0 left-0 h-full bg-red-500 w-1 z-50"></div> -->
+                        
                     </div> 
-                    <div class="anchor5"></div>
-                    <div class="anchor6"></div>
                 </section>
             </div>
 
@@ -113,18 +73,7 @@
                     </div>
                 </section>
 
-                <section aria-labelledby="recent-hires-title">
-                    <div class="rounded-lg bg-white overflow-hidden shadow">
-                        <div class="p-6">
-                            <h2 class="text-base font-medium text-gray-900 pb-3" id="recent-hires-title">Recent Projects</h2>
-                            @foreach($projects as $project)
-                            <div class="mt-2 border-b flex">        
-                                <a href="{{ route('project', ['hash'=>$project->hashkey]) }}" class="w-full px-2 py-1 text-sm font-medium text-gray-700 bg-white">{{$project->name}}</a>
-                            </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </section>
+                
             </div>
             
         </div>
@@ -145,6 +94,7 @@
     var project_id = "{{ $project_id }}";
     var items = @json($items);
     var max_dur = "{{ $max_dur }}";
+    var save_item_url = "{{ route('save_item') }}"
     
 </script>
 <script src="{{ asset('js/home.js') }}"></script>

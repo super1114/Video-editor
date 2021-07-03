@@ -14,16 +14,18 @@
     
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <script src="{{ asset('js/app.js') }}" defer></script>
-
+    
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/components-v2.css') }}" rel="stylesheet">
     <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
     
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/fancybox/dist/jquery.fancybox.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/range-slider/rangeSlider.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('vendor/range-slider/style.css') }}">
     <link href="{{ asset('css/home.css') }}" rel="stylesheet">
+
+
 
     
     <style>
@@ -69,6 +71,8 @@
             </div>
         </div>
     </div>
+    <script src="{{ asset('js/app1.js') }}" defer></script>
+    <script src="{{ asset('js/components-v2.js') }}" defer></script>
     <script
       src="https://code.jquery.com/jquery-3.4.1.min.js"
       integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
@@ -77,7 +81,7 @@
     
     <script src="{{ asset('vendor/fancybox/dist/jquery.fancybox.min.js') }}"></script>
     
-    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <script src="{{ asset('js/alpine.js') }}" defer></script>
     <script>
         function toggleModal () {
             const body = document.querySelector('body')

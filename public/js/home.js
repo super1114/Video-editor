@@ -8,8 +8,24 @@ function _toggleClass(class1="", class2="", name="hidden") {
     $("."+class2).toggleClass(name);
 }
 var slider_count = 0;
+var play_index = 0;
 var VIDEO_EDITOR = {
     isPlaying: false,
+    startPlay: function (sort_items) {
+        var videoDom = document.getElementById("myVideo");
+        videoDom.src = site_url + "/" + sort_items[play_index].resource.path
+        videoDom.currentTime = 3;
+        videoDom.play();
+        videoDom.ontimeupdate = function(e) {
+            if(videoDom.currentTime>sort_items[play_index].i_end) {
+                videoDom.pause();
+                if(play_index==sort_items.length-1){ play_index=0; return; }
+                play_index++;
+                VIDEO_EDITOR.startPlay(sort_items);
+            }
+        }
+        //console.log(videoDom.currentTime);
+    },
     togglePlay: function () {
         console.log(this.isPlaying);
         if(this.isPlaying){
@@ -17,9 +33,23 @@ var VIDEO_EDITOR = {
             var playing_icon = "<svg xmlns='http://www.w3.org/2000/svg' class='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z' /><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 12a9 9 0 11-18 0 9 9 0 0118 0z' /></svg>";
             $(".preview").html(playing_icon);
         }else {
-            this.isPlaying = true;
-            var pause_icon = "<svg xmlns='http://www.w3.org/2000/svg' class='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z' /></svg>";
-            $(".preview").html(pause_icon);
+            $.ajax({
+                url: save_item_url,
+                method:"post",
+                data: {
+                    items: items,
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (data) {
+                    VIDEO_EDITOR.isPlaying = true;
+                    var pause_icon = "<svg xmlns='http://www.w3.org/2000/svg' class='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z' /></svg>";
+                    $(".preview").html(pause_icon);
+                    var sort_items = items.sort(function(a, b) {return a.i_start-b.i_start});
+                    VIDEO_EDITOR.startPlay(sort_items);
+                    
+                }
+            })
+            
         }
     },
     uploadResource: function(e) {
@@ -52,12 +82,17 @@ var VIDEO_EDITOR = {
         $(".items_container").html("");
         items.forEach(function(item) {
             var orghtm = $(".items_container").html();
-            var item_html = "<div class='item item_"+item.id+" w-full'></div>";
+            var item_html = "<div class='flex items-start justify-between'><img src='"+site_url+"/"+item.resource.thumbnail+"' class='w-2/12 pr-4' /><div id='item_"+item.id+"' class='item w-full'></div></div>";
             $(".items_container").html(orghtm+item_html);
-            $('.item_'+item.id).rangeSlider({ settings: false, skin: 'red', type: 'interval', scale: false });
-            $('.item_'+item.id).rangeSlider({}, { step: 1, values: [1,item.i_end],min:0, max: max_dur });
         })
-
+        items.forEach(function(item){
+            $('#item_'+item.id).rangeSlider({ settings: false, skin: 'red', type: 'interval', scale: false });
+            $('#item_'+item.id).rangeSlider({}, { step: 1, values: [item.i_start,item.i_end],min:0, max: max_dur });
+            $('#item_'+item.id).rangeSlider('onChange', function(event){
+                item.i_start = event.detail.values[0];
+                item.i_end = event.detail.values[1];
+            });
+        })
     },
     init: function() {
         this.initPlugins();
@@ -65,7 +100,7 @@ var VIDEO_EDITOR = {
     },
     initPlugins: function() {
         console.log($('meta[name="csrf-token"]').attr('content'));
-        
+        initRangeSlider();
         VIDEO_EDITOR.initItemContainer();
     },
     initHandlers: function() {
@@ -78,24 +113,23 @@ var VIDEO_EDITOR = {
         })
         $(".preview").on("click", function(e) {
 
-            var videoDom = document.getElementById("myVideo");
-            videoDom.currentTime = 3;
-            videoDom.play();
-            videoDom.ontimeupdate = function(e) {
-                if(videoDom.currentTime>6) {
-                    videoDom.pause();
-                }
-            }
-            console.log(videoDom.currentTime);
+            VIDEO_EDITOR.togglePlay();
+
+            
         })
         $(".export_video").on("click", function(e) {
+            var sorted_items = items.sort(function(a, b) {return a.i_start-b.i_start});
             $.ajax({
                 url: export_video_url,
-                method: "get",
-                success: function(e) {
-
+                method: "post",
+                data: {
+                    items: sorted_items,
+                    _token: $('meta[name="csrf-token"]').attr('content')
                 },
-                error: function(e) {
+                success: function(data) {
+                    console.log(data);
+                },
+                error: function(data) {
 
                 }
             })
@@ -119,10 +153,7 @@ var VIDEO_EDITOR = {
         VIDEO_EDITOR.repeatHandlers();
     },
     addSliderHtml: function(resource) {
-        $(".anchor5").rangeSlider({ settings: false, skin: 'red', type: 'interval', scale: false });
-        $(".anchor5").rangeSlider({}, { step: 1, values: [1,9],min:0, max: 16 });
-        $(".anchor6").rangeSlider({ settings: false, skin: 'red', type: 'interval', scale: false });
-        $(".anchor6").rangeSlider({}, { step: 1, values: [1,5],min:0, max:10 });
+        initRangeSlider();
         $.ajax({
             url: add_item_url,
             method: "post",
@@ -163,7 +194,10 @@ var VIDEO_EDITOR = {
                 },
                 success: function(data) {
                     if(data.status=="success") {
-                        $(".components").html(data.components.join(""));
+                        items = data.items;
+                        max_dur = data.max_dur;
+                        VIDEO_EDITOR.initItemContainer();
+                        $(e.target).closest("div").remove();
                     }
                 }
             })
