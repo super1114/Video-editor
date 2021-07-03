@@ -181,7 +181,7 @@ class ProjectController extends Controller
 
     public function my_projects(Request $reqeust) {
         $user_id = Auth::user()->id;
-        $exported_videos = Project::where("user_id", "=", $user_id)->where("export_video", "!=", "")->get();
+        $exported_videos = Project::where("user_id", "=", $user_id)->get();
         return view("my_projects", compact("exported_videos"));
     }
 }
