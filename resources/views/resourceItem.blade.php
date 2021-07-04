@@ -1,10 +1,9 @@
-<div data-resource="{{$resource}}" class="relative">
-    <a class="absolute top-3 right-3 w-5 text-center bg-red-500 hover:bg-white cursor-pointer rounded-md z-50 add_{{$resource->id}} del_res_btn" title="delete resource">
-        <i class="icon ion-md-trash text-white hover:text-red-500"></i>
-    </a>
-    <a class="absolute top-3 right-10 w-5 text-center bg-green-600 hover:bg-white cursor-pointer rounded-md z-50 del_{{$resource->id}} add_res_btn" title="add to workspace">
-        <i class="icon ion-md-add text-white hover:text-green-600"></i>
-    </a>
-    <img src="{{asset($resource->thumbnail)}}" class="w-full rounded-md hover:opacity-80 z-0 res_img" data-id="{{$resource->id}}" />
-    <div class= "text-center">{{ $resource->name }}</div>
+<div class="each m-1 shadow-lg relative cursor-pointer transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110">
+    <img class="w-full eachRes" data-resource="{{$resource}}" src="{{asset($resource->thumbnail)}}" alt="" draggable="true"/>
+    <div class="hidden badge absolute top-0 right-0 bg-indigo-500 m-1 text-gray-200 p-1 px-2 text-xs font-bold rounded">
+        {{$resource->getTime()}}
+    </div>
+    <div class="info-box text-xs flex p-1 font-semibold text-gray-500 bg-gray-300">
+        <span class="mr-1 p-1 px-2 font-bold truncate">{{$resource->name}}</span>
+    </div>
 </div>

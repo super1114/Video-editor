@@ -3,12 +3,21 @@ $.ajaxSetup({
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
 });
-function _toggleClass(class1="", class2="", name="hidden") {
-    $("."+class1).toggleClass(name);
-    $("."+class2).toggleClass(name);
+
+function _toggleClass(class_name, text="", status) {
+    if(status){
+        $("."+class_name).addClass("opacity-50");
+        $("."+class_name).addClass("cursor-not-allowed");
+    }else {
+        $("."+class_name).removeClass("opacity-50");
+        $("."+class_name).removeClass("cursor-not-allowed");
+    }
+    $("."+class_name).prop('disabled', status);
+    $("."+class_name).html(text);
 }
 var slider_count = 0;
 var play_index = 0;
+var selectedResource = "";
 var VIDEO_EDITOR = {
     isPlaying: false,
     startPlay: function (sort_items) {
@@ -58,7 +67,7 @@ var VIDEO_EDITOR = {
         formdata.append("resource", resource);
         formdata.append("_token", $('meta[name="csrf-token"]').attr('content'));
         formdata.append("project_hash", project_hash);
-        _toggleClass("upload_btn", "uploading", "hidden");
+        _toggleClass("upload_btn", "uploading", true);
         $.ajax({
             url: upload_resource_url,
             data: formdata,
@@ -67,10 +76,15 @@ var VIDEO_EDITOR = {
             processData: false,
             success: function(data) {
                 if(data.status=="success") {
-                    _toggleClass("upload_btn", "uploading", "hidden");
+                    _toggleClass("upload_btn", "upload", false);
                     var resource = data.resource; 
                     var origin_html = $(".resources").html().search("No resources")==-1 ? $(".resources").html() : "";
                     $(".resources").html(data.resourceHtml+origin_html);
+                    if(selectedResource!=""){
+                        console.log(selectedResource);
+                        selectedResource.removeClass("border-dashed border-1 border-blue-500");
+                        selectedResource = "";      
+                    }
                     VIDEO_EDITOR.repeatHandlers();
                 }
             }
@@ -79,20 +93,7 @@ var VIDEO_EDITOR = {
     initItemContainer: function() {
         console.log(items);
         console.log(max_dur);
-        $(".items_container").html("");
-        items.forEach(function(item) {
-            var orghtm = $(".items_container").html();
-            var item_html = "<div class='flex items-start justify-between'><img src='"+site_url+"/"+item.resource.thumbnail+"' class='w-2/12 pr-4' /><div id='item_"+item.id+"' class='item w-full'></div></div>";
-            $(".items_container").html(orghtm+item_html);
-        })
-        items.forEach(function(item){
-            $('#item_'+item.id).rangeSlider({ settings: false, skin: 'red', type: 'interval', scale: false });
-            $('#item_'+item.id).rangeSlider({}, { step: 1, values: [item.i_start,item.i_end],min:0, max: max_dur });
-            $('#item_'+item.id).rangeSlider('onChange', function(event){
-                item.i_start = event.detail.values[0];
-                item.i_end = event.detail.values[1];
-            });
-        })
+        
     },
     init: function() {
         this.initPlugins();
@@ -163,11 +164,7 @@ var VIDEO_EDITOR = {
                 new_item: resource,
                 _token: $('meta[name="csrf-token"]').attr('content')
             },
-            success: function(data) {
-                items.forEach(function(item) {
-                    
-                    
-                })
+            success: function(data) {                
                 items = data.items;
                 max_dur = data.max_dur;
                 VIDEO_EDITOR.initItemContainer();
@@ -178,10 +175,20 @@ var VIDEO_EDITOR = {
         })
     },
     repeatHandlers: function() {
-        $(".add_res_btn").on("click", function(e) {
-            var resource = $(e.target).closest("div").data("resource");
-            VIDEO_EDITOR.addSliderHtml(resource);
-        });
+        $(".each").on("click", function(e) {
+            var target = $(e.target).closest(".each");
+            if(selectedResource!="") selectedResource.removeClass("border-dashed border-1 border-blue-500");
+            selectedResource = target;
+        })
+        $(".each").on("mouseover", function (e) {
+            var target = $(e.target).closest(".each");
+            target.find(".badge").removeClass("hidden");
+        })
+        $(".each").on("mouseout", function (e) {
+            var target = $(e.target).closest(".each");
+            target.find(".badge").addClass("hidden");
+        })
+        
         $(".del_res_btn").on("click", function(e) {
             var resource = $(e.target).closest("div").data("resource");
             $.ajax({

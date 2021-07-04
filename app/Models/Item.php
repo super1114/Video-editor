@@ -16,4 +16,8 @@ class Item extends Model
     public function resource() {
         return $this->belongsTo(Resource::class, "resource_id");
     }
+    public function getWidth() {
+        $width = $this->i_end - $this->i_start;
+        return "width:".($width*3)."px";
+    }
 }

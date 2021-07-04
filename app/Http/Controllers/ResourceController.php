@@ -8,6 +8,8 @@ use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use FFMpeg;
+use Carbon;
+use Thumbnail;
 class ResourceController extends Controller
 {
     /**
@@ -43,6 +45,7 @@ class ResourceController extends Controller
     
     public function upload(Request $request)
     {
+        $timestamp = str_replace([' ', ':'], '-', Carbon::now()->toDateTimeString());
         $resource = $request->file("resource");
         $mimeType = $resource->getMimeType();
         $project_hash = $request->project_hash;
@@ -51,38 +54,45 @@ class ResourceController extends Controller
             mkdir("uploads/".$project_hash, 0777);
         }
 
-        $resource->move("uploads/".$project_hash, $file_name);
+        $upload_status = $resource->move("uploads/".$project_hash, $file_name);
+        $video_path = public_path()."/uploads/".$project_hash."/".$file_name;
+        $thumbnail_path = public_path()."/uploads/thumbnails";
+        $thumbnail_image = $timestamp.".jpg";
+        if(!$upload_status) {
+            return response()->json(["status"=> "failed","resource"=>"upload failded", "resourceHtml"=>"Failed Try again"]);
+        }
         $record = new Resource;
         $record->name = $file_name;
         $record->path = "uploads/".$project_hash."/".$file_name;
         $record->project_id = $project_hash;
         if(strpos($mimeType, "image")!==false) {
             $record->type = "image";
-            $record->thumbnail = "uploads/".$project_hash."/".$file_name;
+            $record->thumbnail = $record->path;
             $record->duration = 0;
         } else if (strpos($mimeType, "video")!==false) {
             $record->type = "video";
             $ffmpeg = FFMpeg\FFMpeg::create([
-                'ffmpeg.binaries'  => env('FFMPEG_BINARIES'),
-                'ffprobe.binaries' => env('FFPROBE_BINARIES')
+                'ffmpeg.binaries'  => env('FFMPEG_PATH'),
+                'ffprobe.binaries' => env('FFPROBE_PATH')
             ]);
             $video = $ffmpeg->open($record->path);
             $duration = FFMpeg\FFProbe::create([
-                'ffmpeg.binaries'  => env('FFMPEG_BINARIES'),
-                'ffprobe.binaries' => env('FFPROBE_BINARIES')
+                'ffmpeg.binaries'  => env('FFMPEG_PATH'),
+                'ffprobe.binaries' => env('FFPROBE_PATH')
             ])
             ->format($record->path)
             ->get('duration');
             $record->duration = round($duration);
-            $thumbnail_image =substr(Crypt::encryptString($file_name),5,10).".jpg";
-            $video->frame(FFMpeg\Coordinate\TimeCode::fromSeconds(1))->save("uploads/thumbnails/".$thumbnail_image);
-            $record->thumbnail = "uploads/thumbnails/".$thumbnail_image;
+            $thumbnail_status = Thumbnail::getThumbnail($video_path,$thumbnail_path,$thumbnail_image,1);
+            if($thumbnail_status) {
+                $record->thumbnail = env("APP_URL")."/uploads/thumbnails/".$thumbnail_image;
+            }
         } else {
             $record->type = "audio";
             $record->thumbnail = "uploads/thumbnails/audio.jpg";
             $duration = FFMpeg\FFProbe::create([
-                'ffmpeg.binaries'  => env('FFMPEG_BINARIES'),
-                'ffprobe.binaries' => env('FFPROBE_BINARIES')
+                'ffmpeg.binaries'  => env('FFMPEG_PATH'),
+                'ffprobe.binaries' => env('FFPROBE_PATH')
             ])
             ->format($record->path)
             ->get('duration');

@@ -177,6 +177,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        Lakshmaji\Thumbnail\ThumbnailServiceProvider::class,
+
 
     ],
 
@@ -233,7 +235,9 @@ return [
         'FFMpeg' => ProtoneMedia\LaravelFFMpeg\Support\FFMpeg::class,
         // 'FFMpeg' => Pbmedia\LaravelFFMpeg\FFMpegFacade::class,
         'Toastr'  => Brian2694\Toastr\Facades\Toastr::class,
-        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
+        'Thumbnail' => Lakshmaji\Thumbnail\Facade\Thumbnail::class,
+        'Carbon' => 'Carbon\Carbon',
     ],
 
 ];

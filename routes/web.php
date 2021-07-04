@@ -2,24 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
-use App\Http\Controllers\QrController;
-use App\Http\Controllers\LogController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\HireController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\TankerController;
-use App\Http\Controllers\SettingController;
-use App\Http\Controllers\CompanyController;
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\CheckListNrController;
-use App\Http\Controllers\CheckListRigidController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\LinkController;
-use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ResourceController;
-use App\Http\Controllers\TCLEmailController;
 
 
 Route::get('/', function () {
@@ -31,7 +16,6 @@ Route::get('/', function () {
 
 
 Auth::routes();
-//Route::get('sendMail', [TCLEmailController::class, 'sendHireEmailToCustomer'])->name('email');
 
 
 Route::prefix('/')
@@ -49,7 +33,6 @@ Route::prefix('/')
         Route::post('add_item', [ProjectController::class, 'add_item'])->name('add_item');
         Route::post('save_item', [ProjectController::class, 'save_item'])->name('save_item');
         Route::get('getComponent/{resource_id}', [ResourceController::class, 'getComponent'])->name('getComponent');
-        Route::get('qrcode', [QRController::class, 'generateQrCode'])->name('qrcode');
 });
 
 Route::get('/{any}', function(){
