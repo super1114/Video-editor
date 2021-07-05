@@ -29,14 +29,18 @@ function drop(e) {
             _token: $('meta[name="csrf-token"]').attr('content')
         },
         success: function(data) {
-
+            items = data.items;
+            max_dur = data.max_dur;
+            addedItemHtml = data.addItemHtml;
+            $(".drag_text").remove();
+            $("#workspace").append(addedItemHtml);
+            timeSlotAction();
         },
         error: function(data) {
 
         }
     })
     dragStarted = false;
-    console.log(resource);
 }
 workspaceItem.addEventListener("drop", drop);
 

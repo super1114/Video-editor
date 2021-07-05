@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Models\Resource;
 use App\Models\Item;
+use App\Models\Slot;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Auth;
@@ -57,6 +58,7 @@ class ProjectController extends Controller
     public function getItems ($project_id) {
         $items = Item::where("project_id", "=", $project_id)->orderBy("updated_at", "asc")->get();
         $duration_array = array();
+
         foreach($items as $item) {
             array_push($duration_array, $item->resource->duration);
         }
@@ -157,7 +159,6 @@ class ProjectController extends Controller
         $record->resource_id = $new_item["id"];
         $record->i_start = 0;
         $record->i_end = $new_item["duration"];
-        
         if($org_items!=null){
             foreach($org_items as $oItem) {
                 Item::where("project_id", "=", $oItem["project_id"])
@@ -166,8 +167,27 @@ class ProjectController extends Controller
             }
         }
         $record->save();
+        $slot = new Slot;
+        $slot->item_id = $record->id;
+        $slot->v_start = 0;
+        $slot->t_start = 0;
+        $slot->duration = $new_item["duration"];
+        $slot->save();
         $res_items = $this->getItems($project_id);
-        return response()->json(["items"=>$res_items["items"], "max_dur" => $res_items["max_dur"]]);
+        $addItemHtml = view("time_slot", ["item"=>$record])->render();
+        return response()->json(["items"=>$res_items["items"], "max_dur" => $res_items["max_dur"], "addItemHtml" => $addItemHtml ]);
+    }
+    public function del_item(Request $request) {
+        $project_id = $request->project_id;
+        $item_id = $request->item_id;
+        $slot_id = $request->slot_id;
+        Slot::find($slot_id)->delete();
+        $item = Item::find($item_id);
+        if(count($item->slots)==0){
+            $item->delete();
+        }
+        $res_items = $this->getItems($project_id);
+        return response()->json(["status"=>"success", "msg" => "OK", "items"=>$res_items["items"], "max_dur" => $res_items["max_dur"]]);
     }
     public function save_item(Request $request) {
         foreach($request->items as $item) {

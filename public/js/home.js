@@ -48,7 +48,7 @@ var VIDEO_EDITOR = {
         console.log(this.isPlaying);
         if(this.isPlaying){
             this.isPlaying =  false;
-            var playing_icon = "<svg xmlns='http://www.w3.org/2000/svg' class='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z' /><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 12a9 9 0 11-18 0 9 9 0 0118 0z' /></svg>";
+            var playing_icon = "<svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z' /><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 12a9 9 0 11-18 0 9 9 0 0118 0z' /></svg>";
             $(".preview").html(playing_icon);
         }else {
             $.ajax({
@@ -60,7 +60,7 @@ var VIDEO_EDITOR = {
                 },
                 success: function (data) {
                     VIDEO_EDITOR.isPlaying = true;
-                    var pause_icon = "<svg xmlns='http://www.w3.org/2000/svg' class='h-6 w-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z' /></svg>";
+                    var pause_icon = "<svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z' /></svg>";
                     $(".preview").html(pause_icon);
                     var sort_items = items.sort(function(a, b) {return a.i_start-b.i_start});
                     VIDEO_EDITOR.startPlay(sort_items);
@@ -113,25 +113,7 @@ var VIDEO_EDITOR = {
         VIDEO_EDITOR.initItemContainer();
     },
     initHandlers: function() {
-        $(".seeker").on("mousedown", function(e) {
-            if(e.buttons){
-                prevX = e.pageX;
-                curX = e.pageX;
-                console.log($(".seeker").css("left"));
-                //$(this).css({'transform' : 'translate(' + "10px" +', ' + "0px" + ')'})    
-            }
-        })
-        $(".seeker").on("mousemove", function(e) {
-            if(e.buttons){
-                $(this).css({'transform' : 'translate(' + "10px" +', ' + "0px" + ')'})    
-            }
-        });
-        $("#timelineCanvas").on("click", function(e) {
-            canvas = document.getElementById("timelineCanvas");
-            var pos = getMousePos(canvas, e).x;
-            $(".seeker").css({'transform' : 'translate(' + pos+"px" +', ' + "0px" + ')'})    
-            console.log(e.pageX);
-        })
+        
         $("#upload_file").on("change", function(e) {
             VIDEO_EDITOR.uploadResource(e);
         })

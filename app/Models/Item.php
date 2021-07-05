@@ -17,8 +17,11 @@ class Item extends Model
         return $this->belongsTo(Resource::class, "resource_id");
     }
     public function getWidth() {
-        $width = $this->i_end - $this->i_start;
+        $width = $this->resource->duration;
         if($width>900) $width = 900;
         return "width:".($width*1.5)."px";
+    }
+    public function slots() {
+        return $this->hasMany(Slot::class, "item_id");
     }
 }

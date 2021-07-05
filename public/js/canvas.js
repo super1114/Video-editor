@@ -2,7 +2,7 @@ function getTwoNum(i) {
     if(i<10) return "0"+i;
     else return i;
 }
-$(document).ready(function(){
+function DrawTimelineCanvas() {
     var c = document.getElementById("timelineCanvas");
     var ctx = c.getContext("2d");
     
@@ -31,5 +31,7 @@ $(document).ready(function(){
     
     ctx.strokeStyle = "rgb(141, 141, 156)";
     ctx.stroke();
-
+}
+$(document).ready(function(){
+    DrawTimelineCanvas();
 })

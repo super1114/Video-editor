@@ -1,3 +1,25 @@
 .drop-over {
-	border: dashed 3px red !important;
+	border: dashed 2px white !important;
+}
+
+/*Scroll Style*/
+::-webkit-scrollbar {
+	height: 7px;
+  	width: 7px !important;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: rgba(156, 163, 175, var(--tw-bg-opacity));; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(55, 65, 81, var(--tw-bg-opacity));
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(31,41,55,var(--tw-bg-opacity)); 
 }
