@@ -17,9 +17,14 @@ function delete_item() {
         success: function(data) {
             items = data.items;
             max_dur = data.max_dur;
-            curTimeSlot.closest(".time_slot_parent").remove();
+            var itemHtml = data.itemHtml;
+            //curTimeSlot.closest(".time_slot_parent").remove();
+            curTimeSlot.closest(".time_slot_parent").html(itemHtml);
+            timeSlotAction();
             curTimeSlot = "";
+            console.log(items);
             if(items.length==0){
+                $("#item_"+selectedItem.item_id).remove();
                 var org_html = $("#workspace").html();
                 var new_html = "<h1 class='text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-gray-400 to-gray-600 text-center leading-normal drag_text'>Drag and drop media to the timeline</h1>"
                 $("#workspace").html(org_html+new_html);
@@ -82,7 +87,25 @@ $(document).ready(function(){
         }
     })
     $(".cut_item").on("click", function(e) {
+        console.log(items);
+        console.log(curTimeSec);
         if(selectedItem=="") return;
+        console.log(selectedItem);
+        $.ajax({
+            url: cut_item_url,
+            method: "post",
+            data: {
+                slot_id: selectedItem.id,
+                item_id: selectedItem.item_id,
+                cutPosTime: curTimeSec
+            },
+            success: function(data){
+                $("#item_"+selectedItem.item_id).html(data.itemHtml);
+                timeSlotAction();
+            },
+            error: function(data, error) {
 
+            }
+        })
     })
 })

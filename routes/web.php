@@ -33,6 +33,7 @@ Route::prefix('/')
         Route::post('add_item', [ProjectController::class, 'add_item'])->name('add_item');
         Route::post('save_item', [ProjectController::class, 'save_item'])->name('save_item');
         Route::post('del_item', [ProjectController::class, 'del_item'])->name('del_item');
+        Route::post('cut_item', [ProjectController::class, 'cut_item'])->name('cut_item');
         Route::get('getComponent/{resource_id}', [ResourceController::class, 'getComponent'])->name('getComponent');
 });
 

@@ -174,7 +174,7 @@ class ProjectController extends Controller
         $slot->duration = $new_item["duration"];
         $slot->save();
         $res_items = $this->getItems($project_id);
-        $addItemHtml = view("time_slot", ["item"=>$record])->render();
+        $addItemHtml = view("time_slot", ["item"=>$record, "is_parent"=>true])->render();
         return response()->json(["items"=>$res_items["items"], "max_dur" => $res_items["max_dur"], "addItemHtml" => $addItemHtml ]);
     }
     public function del_item(Request $request) {
@@ -183,11 +183,47 @@ class ProjectController extends Controller
         $slot_id = $request->slot_id;
         Slot::find($slot_id)->delete();
         $item = Item::find($item_id);
+    
+        $itemHtml = "";
         if(count($item->slots)==0){
             $item->delete();
+        } else {
+            $itemHtml = view("time_slot", ["item"=>$item, "is_parent"=>true])->render();
         }
         $res_items = $this->getItems($project_id);
-        return response()->json(["status"=>"success", "msg" => "OK", "items"=>$res_items["items"], "max_dur" => $res_items["max_dur"]]);
+        return response()->json(["status"=>"success", "msg" => "OK", "items"=>$res_items["items"], "max_dur" => $res_items["max_dur"], "itemHtml"=>$itemHtml]);
+    }
+
+    public function cut_item(Request $request) {
+        $slot_id = $request->slot_id;
+        $item_id = $request->item_id;
+        $item = Item::find($item_id);
+        $curPosTime = $request->cutPosTime;
+        $targetSlot = "";
+        $slot = Slot::find($slot_id);
+        //dd($slot->t_start,$curPosTime, $slot->t_start+$slot->duration);
+        if($slot->t_start<$curPosTime&&($slot->t_start+$slot->duration)>$curPosTime){
+            $record1 = new Slot;
+            $record1->item_id = $item_id;
+            $record1->v_start = $slot->v_start;
+            $record1->t_start = $slot->t_start;
+            $record1->duration = $curPosTime-$slot->t_start;
+            $record1->save();
+
+            $record2 = new Slot;
+            $record2->item_id = $item_id;
+            $record2->v_start = $slot->v_start+$record1->duration;
+            $record2->t_start = $curPosTime;
+            $record2->duration = $slot->duration-$record1->duration;
+            $record2->save();
+            $slot->delete();
+            $itemHtml = view("time_slot", ["item"=>Item::find($item_id)
+        , "is_parent"=>false])->render();
+            return response()->json(["status"=>"success", "msg"=> "OK", "itemHtml"=>$itemHtml]);
+            
+        } else {
+            return response()->json(["status"=>"failed", "msg"=>"time position is not correct"]);
+        }
     }
     public function save_item(Request $request) {
         foreach($request->items as $item) {

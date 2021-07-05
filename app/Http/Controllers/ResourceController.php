@@ -82,7 +82,7 @@ class ResourceController extends Controller
             ])
             ->format($record->path)
             ->get('duration');
-            $record->duration = round($duration);
+            $record->duration = min(round($duration),900);
             $thumbnail_status = Thumbnail::getThumbnail($video_path,$thumbnail_path,$thumbnail_image,1);
             if($thumbnail_status) {
                 $record->thumbnail = env("APP_URL")."/uploads/thumbnails/".$thumbnail_image;

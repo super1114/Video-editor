@@ -44,7 +44,7 @@
             <div class="grid grid-cols-1 gap-4">
                 <section aria-labelledby="movements-title"  class="p-2 bg-gray-800 rounded-md">
                     <div class="rounded-lg bg-gray-800 overflow-hidden">
-                        <div class="h-96 overflow-y-scroll">
+                        <div class="lg:h-96 overflow-y-scroll">
                             <div class="grid grid-cols-2 gap-4 resources">
                                 @forelse($resources as $resource)
                                     <div class="each m-1 shadow-lg relative cursor-pointer transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110" >
@@ -56,7 +56,7 @@
                                         </div>
                                     </div>  
                                 @empty
-                                    <div class="flex-grow w-full">
+                                    <div class="flex-grow w-full text-white no_media_text">
                                         No Media
                                     </div>
                                 @endforelse
@@ -100,14 +100,14 @@
             </div>
             
             @forelse($items as $item)
-            <div class="text-white flex items-center justify-start time_slot_parent bg-gray-700">
-                @foreach($item->slots as $slot)
-                <div data-item="{{$slot}}" class="flex items-center justify-start rounded-md time_slot">
+            <div class="relative text-white flex items-center justify-start time_slot_parent bg-gray-700 h-12" id="item_{{$item->id}}">
+                @foreach($item->slots()->orderBy('t_start')->get() as $slot)
+                <div id="slot_{{$slot->id}}" data-item="{{$slot}}" class="absolute flex items-center justify-start rounded-md time_slot" style="{{$slot->getWidth().$slot->getLeftStyle()}}">
                     <img class="h-12 rounded-sm" src="{{$item->resource->thumbnail}}" alt="">
-                    <div class="bg-gray-900 rounded-sm h-12 "  style="{{$slot->getWidth()}}"></div>    
+                    <div class="bg-gray-900 rounded-sm h-12 w-full"></div>    
                 </div>
                 @endforeach
-                <div class="w-full"></div>
+                <div class=""></div>
             </div>
             @empty
                 <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-gray-400 to-gray-600 text-center leading-normal drag_text">
@@ -131,6 +131,7 @@
     var del_resource_url = "{{ route('del_resource') }}"
     var add_item_url = "{{ route('add_item') }}";
     var del_item_url = "{{ route('del_item') }}";
+    var cut_item_url = "{{ route('cut_item') }}";
     var project_hash = "{{ $project_hash }}";
     var project_id = "{{ $project_id }}";
     var items = @json($items);

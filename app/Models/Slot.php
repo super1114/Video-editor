@@ -16,6 +16,10 @@ class Slot extends Model
     public function getWidth(){
         $width = $this->duration;
         if($width>900) $width = 900;
-        return "width:".($width*1.5)."px";
+        return "width:".($width*1.5)."px;";
+    }
+    public function getLeftStyle()
+    {
+        return "left:".($this->t_start*1.5)."px;";
     }
 }

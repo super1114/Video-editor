@@ -88,6 +88,7 @@ var VIDEO_EDITOR = {
                     _toggleClass("upload_btn", "upload", false);
                     var resource = data.resource; 
                     var origin_html = $(".resources").html().search("No resources")==-1 ? $(".resources").html() : "";
+                    $(".no_media_text").addClass("hidden");
                     $(".resources").html(data.resourceHtml+origin_html);
                     if(selectedResource!=""){
                         console.log(selectedResource);
