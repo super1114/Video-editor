@@ -51,7 +51,7 @@
                 <section aria-labelledby="movements-title">
                     <div class="rounded-lg bg-white overflow-hidden shadow">
                         <div class="p-2">
-                            <h2 class="text-base font-medium text-gray-900 mb-1" id="movements-title" draggable="true">Media</h2>
+                            <h2 class="text-base font-medium text-gray-900 mb-1" id="movements-title">Media</h2>
                             <div class="grid grid-cols-2 gap-4 resources">
                                 @forelse($resources as $resource)
                                     <div class="each m-1 shadow-lg relative cursor-pointer transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110" >
@@ -90,14 +90,22 @@
                 </svg>
             </button>
         </div>
-        <div class="canvasArea bg-gray-600">
-            <canvas height="30" width="1800" class="timelineCanvas"></canvas>
-        </div>
-        <div class="overflow-x-scroll py-3 px-5 bg-gray-600 grid grid-rows-2 md:grid-rows-2 gap-2" id="workspace">
+        <div class="relative overflow-x-scroll px-5 pb-5 bg-gray-600 grid grid-rows-2 md:grid-rows-2 gap-1" id="workspace">
+            <div class="seeker absolute h-full left-5 w-0.5 bg-white"  draggable="true" style="cursor:grab;">
+                <svg width="12" height="14" viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg" fill="white" class="sc-bkzqDD kETWwh absolute" style="left:-5px;">
+                    <path d="M0 1.16667V7.67376C0 7.98888 0.127471 8.2906 0.353409 8.51026L5.18674 13.2093C5.63955 13.6496 6.36045 13.6496 6.81326 13.2093L11.6466 8.51026C11.8725 8.2906 12 7.98888 12 7.67376V1.16667C12 0.522335 11.4777 0 10.8333 0H1.16667C0.522335 0 0 0.522334 0 1.16667Z"></path>
+                </svg>
+            </div>
+            <div style="height: 30px;">
+                <canvas height="25" width="1350" id="timelineCanvas"></canvas>
+            </div>
             @forelse($items as $item)
             <div class="text-white flex items-center justify-start">
-                <img class="h-12 mr-2 rounded-sm" src="{{$item->resource->thumbnail}}" alt="">
-                <div class="bg-gray-700 rounded-sm h-12 border-dashed border-2 border-gray-200"  style="{{$item->getWidth()}}"></div>
+                <div class="flex items-center justify-start border-solid border-2 border-gray-200 rounded-md">
+                    <img class="h-12 rounded-sm" src="{{$item->resource->thumbnail}}" alt="">
+                    <div class="bg-gray-700 rounded-sm h-12 "  style="{{$item->getWidth()}}"></div>    
+                </div>
+                <div class="w-full"></div>
             </div>
             @empty
                 <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-gray-400 to-gray-600 text-center leading-normal">
@@ -128,5 +136,6 @@
 </script>
 <script src="{{ asset('js/home.js') }}"></script>
 <script src="{{ asset('js/dragDrop.js') }}"></script>
+<script src="{{ asset('js/canvas.js') }}"></script>
 
 @endsection

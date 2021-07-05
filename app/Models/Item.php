@@ -18,6 +18,7 @@ class Item extends Model
     }
     public function getWidth() {
         $width = $this->i_end - $this->i_start;
-        return "width:".($width*3)."px";
+        if($width>900) $width = 900;
+        return "width:".($width*1.5)."px";
     }
 }

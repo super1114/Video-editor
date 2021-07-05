@@ -18,6 +18,15 @@ function _toggleClass(class_name, text="", status) {
 var slider_count = 0;
 var play_index = 0;
 var selectedResource = "";
+var prevX = 0;
+var currX = 0;
+function getMousePos(canvas, evt) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+      x: evt.clientX - rect.left,
+      y: evt.clientY - rect.top
+    };
+}
 var VIDEO_EDITOR = {
     isPlaying: false,
     startPlay: function (sort_items) {
@@ -93,7 +102,6 @@ var VIDEO_EDITOR = {
     initItemContainer: function() {
         console.log(items);
         console.log(max_dur);
-        
     },
     init: function() {
         this.initPlugins();
@@ -105,6 +113,25 @@ var VIDEO_EDITOR = {
         VIDEO_EDITOR.initItemContainer();
     },
     initHandlers: function() {
+        $(".seeker").on("mousedown", function(e) {
+            if(e.buttons){
+                prevX = e.pageX;
+                curX = e.pageX;
+                console.log($(".seeker").css("left"));
+                //$(this).css({'transform' : 'translate(' + "10px" +', ' + "0px" + ')'})    
+            }
+        })
+        $(".seeker").on("mousemove", function(e) {
+            if(e.buttons){
+                $(this).css({'transform' : 'translate(' + "10px" +', ' + "0px" + ')'})    
+            }
+        });
+        $("#timelineCanvas").on("click", function(e) {
+            canvas = document.getElementById("timelineCanvas");
+            var pos = getMousePos(canvas, e).x;
+            $(".seeker").css({'transform' : 'translate(' + pos+"px" +', ' + "0px" + ')'})    
+            console.log(e.pageX);
+        })
         $("#upload_file").on("change", function(e) {
             VIDEO_EDITOR.uploadResource(e);
         })
@@ -113,10 +140,7 @@ var VIDEO_EDITOR = {
             $("#upload_file").trigger("click");
         })
         $(".preview").on("click", function(e) {
-
             VIDEO_EDITOR.togglePlay();
-
-            
         })
         $(".export_video").on("click", function(e) {
             var sorted_items = items.sort(function(a, b) {return a.i_start-b.i_start});
