@@ -90,7 +90,7 @@
             </button>
         </div>
         <div class="relative overflow-x-scroll px-5 pb-5 bg-gray-600 grid grid-rows-2 md:grid-rows-2 gap-1" id="workspace">
-            <div class="seeker absolute h-full left-5 w-0.5 bg-white z-50"  draggable="true" style="cursor:grab;">
+            <div class="seeker absolute h-full left-5 w-0.5 bg-white z-50" id="seeker" style="cursor:grab;">
                 <svg width="12" height="14" viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg" fill="white" class="sc-bkzqDD kETWwh absolute" style="left:-5px;">
                     <path d="M0 1.16667V7.67376C0 7.98888 0.127471 8.2906 0.353409 8.51026L5.18674 13.2093C5.63955 13.6496 6.36045 13.6496 6.81326 13.2093L11.6466 8.51026C11.8725 8.2906 12 7.98888 12 7.67376V1.16667C12 0.522335 11.4777 0 10.8333 0H1.16667C0.522335 0 0 0.522334 0 1.16667Z"></path>
                 </svg>
@@ -138,6 +138,13 @@
     var max_dur = "{{ $max_dur }}";
     var save_item_url = "{{ route('save_item') }}"
     
+
+    //variables in js files.
+    var c = document.getElementById("timelineCanvas");
+    var ctx = c.getContext("2d");
+    var curTimeSlot="";
+    var selectedItem="";
+    var curTimeSec = 0;
 </script>
 <script src="{{ asset('js/home.js') }}"></script>
 

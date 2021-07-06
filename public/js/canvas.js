@@ -3,9 +3,6 @@ function getTwoNum(i) {
     else return i;
 }
 function DrawTimelineCanvas() {
-    var c = document.getElementById("timelineCanvas");
-    var ctx = c.getContext("2d");
-    
     ctx.beginPath();
     ctx.lineWidth = 1;
     ctx.moveTo(0,0);

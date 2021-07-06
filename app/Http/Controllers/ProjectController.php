@@ -56,7 +56,7 @@ class ProjectController extends Controller
     }
 
     public function getItems ($project_id) {
-        $items = Item::where("project_id", "=", $project_id)->orderBy("updated_at", "asc")->get();
+        $items = Item::with('slots')->where("project_id", "=", $project_id)->orderBy("updated_at", "asc")->get();
         $duration_array = array();
 
         foreach($items as $item) {

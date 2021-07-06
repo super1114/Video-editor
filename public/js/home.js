@@ -123,6 +123,8 @@ var VIDEO_EDITOR = {
             $("#upload_file").trigger("click");
         })
         $(".preview").on("click", function(e) {
+            console.log(items);
+            console.log(curTimeSec);
             VIDEO_EDITOR.togglePlay();
         })
         $(".export_video").on("click", function(e) {

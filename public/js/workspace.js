@@ -1,8 +1,3 @@
-var curTimeSlot="";
-var selectedItem="";
-var curTimeSec = 0;
-
-
 function delete_item() {
     if(selectedItem=="")return;
     console.log(selectedItem);
@@ -18,7 +13,6 @@ function delete_item() {
             items = data.items;
             max_dur = data.max_dur;
             var itemHtml = data.itemHtml;
-            //curTimeSlot.closest(".time_slot_parent").remove();
             curTimeSlot.closest(".time_slot_parent").html(itemHtml);
             timeSlotAction();
             curTimeSlot = "";
@@ -46,6 +40,7 @@ function timeLineCanvasAction () {
         curTimeSec = Math.floor(pos/1.5);
         console.log(curTimeSec);
     })
+    initSeekerMoveHandler();
 }
 
 function timeSlotAction(){
@@ -62,22 +57,6 @@ function timeSlotAction(){
 $(document).ready(function(){
     timeSlotAction();
     timeLineCanvasAction();
-    $(".seeker").on("mousedown", function(e) {
-        if(e.buttons){
-            prevX = e.pageX;
-            curX = e.pageX;
-            console.log($(".seeker").css("left"));
-            //$(this).css({'transform' : 'translate(' + "10px" +', ' + "0px" + ')'})    
-        }
-    })
-    $(".seeker").on("mousemove", function(e) {
-        if(e.buttons){
-            $(this).css({'transform' : 'translate(' + "10px" +', ' + "0px" + ')'})    
-        }
-    });
-    
-
-    
     $(".delete_item").on("click", function(e) {
         delete_item();
     })
@@ -109,3 +88,65 @@ $(document).ready(function(){
         })
     })
 })
+window.onload = initSeekerMoveHandler;
+window.onload = initTimeSlotMoveHandler;
+
+function initSeekerMoveHandler(){
+    document.getElementById('seeker').addEventListener('mousedown', seekerMouseDown, false);
+    window.addEventListener('mouseup', seekermouseUp, false);
+}
+
+function seekermouseUp()
+{
+    window.removeEventListener('mousemove', seekerMove, true);
+}
+
+function seekerMouseDown(e){
+  window.addEventListener('mousemove', seekerMove, true);
+}
+
+function seekerMove(e){
+    var pos = getMousePos(c,e).x;
+    $("#seeker").css({'transform' : 'translate(' + pos+"px" +', ' + "0px" + ')'})    
+    curTimeSec = Math.floor(pos/1.5);
+}
+
+var distance = 0;
+function initTimeSlotMoveHandler(){
+    for(var i=0;i<items.length;i++){
+        for(var j=0; j< items[i].slots.length;j++){
+            document.getElementById("slot_"+items[i].slots[j].id).addEventListener('mousedown', timeSlotMouseDown, false);
+        }
+    }
+    window.addEventListener('mouseup', timeSlotMouseUp, false);
+}
+
+var targetString = "";
+
+function timeSlotMouseUp()
+{
+    console.log("moused up");
+    window.removeEventListener('mousemove', timeSlotMove, true);
+    targetString = "";
+}
+
+function timeSlotMouseDown(e){
+    targetString = e.target.toString();
+    var pos = getMousePos(c, e).x;
+    var left = parseInt($(e.target).closest(".time_slot").css("left"));
+    distance = pos-left;
+    window.addEventListener('mousemove', timeSlotMove, true);
+}
+
+
+function timeSlotMove(e){
+    let isRight = targetString.localeCompare(e.target.toString());
+    if(isRight!=0) {timeSlotMouseUp();return};
+    if(distance==0) return;
+    var pos = getMousePos(c,e).x;
+    let left = pos-distance;
+    if(left<0) left = 0;
+    $(e.target).closest(".time_slot").css('left', left+"px");
+    //console.log('left : ' +pos+"px");
+}
+
