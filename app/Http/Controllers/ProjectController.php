@@ -88,13 +88,14 @@ class ProjectController extends Controller
     }
 
     public function export_video(Request $request, $hash) {
-        $items = $request->items;
-        
+        //$items = $request->items;
+        $project_id = $request->project_id;
         $ffmpeg = FFMpeg\FFMpeg::create([
-            'ffmpeg.binaries'  => env('FFMPEG_BINARIES'),
-            'ffprobe.binaries' => env('FFPROBE_BINARIES')
+            'ffmpeg.binaries'  => env('FFMPEG_PATH'),
+            'ffprobe.binaries' => env('FFPROBE_PATH')
         ]);
-        $video = $ffmpeg->open(public_path()."/".$items[0]["resource"]["path"]);
+        //dd($project_id);
+        /*$video = $ffmpeg->open(public_path()."/".$items[0]["resource"]["path"]);
         $clip = $video->clip(FFMpeg\Coordinate\TimeCode::fromSeconds(1), FFMpeg\Coordinate\TimeCode::fromSeconds(5));
         $format = new FFMpeg\Format\Video\X264('aac', 'libx264');
         $clip->save($format, public_path()."/"."video.avi");
@@ -103,7 +104,7 @@ class ProjectController extends Controller
             //exec("ffmpeg -i ".public_path()."/".$item["resource"]["path"]." -ss 00:00:00 -codec copy -t ".($item["i_end"]-$item["i_start"])." ".public_path()."/uploads/temp/".$item["id"].".mp4");
         }
         exec("ffmpeg -i ".public_path()."/video/".$timestamp.$filename." ".public_path()."/video/new_".$timestamp.$filename);
-        
+        */
 
         //$video->concat(array($v1,$v2,$v3))->saveFromSameCodecs($newFile, TRUE);
 
@@ -115,10 +116,11 @@ class ProjectController extends Controller
         }
         $video = $ffmpeg->open($record->path);
         $video->
-        $project = Project::where("hashkey", "=", $hash)->first();
+        */
+        $project = Project::find($project_id);
         $project->qrcode = $this->generateQRCode($project->hashkey);
         $project->export_video = "sssfffddd";
-        $project->save();*/
+        $project->save();
     }
 
     public function generateQRCode($hashkey) {
@@ -140,13 +142,13 @@ class ProjectController extends Controller
         return $source;
     }
     public function order_video(Request $request) {
-        $id = $request->id;
+        $id = $request->project_id;
         $project = Project::find($id);
         $user = Auth::user();
         $project->order_status = 2;
         //$project->qrcode = $this->generateQRCode($project->hashkey);
         $project->save();
-        \Mail::to("super1114dev@gmail.com")->send(new \App\Mail\SendOrderMail($user));
+        //\Mail::to("super1114dev@gmail.com")->send(new \App\Mail\SendOrderMail($user));
 
     }
 
@@ -219,7 +221,9 @@ class ProjectController extends Controller
             $slot->delete();
             $itemHtml = view("time_slot", ["item"=>Item::find($item_id)
         , "is_parent"=>false])->render();
-            return response()->json(["status"=>"success", "msg"=> "OK", "itemHtml"=>$itemHtml]);
+            $res_items = $this->getItems($item->project_id);
+        
+            return response()->json(["status"=>"success", "msg"=> "OK", "itemHtml"=>$itemHtml, "items"=>$res_items["items"],"max_dur" => $res_items["max_dur"]]);
             
         } else {
             return response()->json(["status"=>"failed", "msg"=>"time position is not correct"]);
@@ -237,7 +241,7 @@ class ProjectController extends Controller
 
     public function my_projects(Request $reqeust) {
         $user_id = Auth::user()->id;
-        $exported_videos = Project::where("user_id", "=", $user_id)->get();
+        $exported_videos = Project::where("user_id", "=", $user_id)->where("export_video", "!=", "")->get();
         return view("my_projects", compact("exported_videos"));
     }
 }

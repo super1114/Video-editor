@@ -1,13 +1,14 @@
 @extends('layouts.app')
 
 @section('styles')
-  <style>
+<link rel="stylesheet" type="text/css" href="{{ asset('vendor/fancybox/dist/jquery.fancybox.min.css') }}">
+<style>
   
-thead tr th:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px;}
-thead tr th:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px;}
+    thead tr th:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px;}
+    thead tr th:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px;}
 
-tbody tr td:first-child { border-top-left-radius: 5px; border-bottom-left-radius: 0px;}
-tbody tr td:last-child { border-top-right-radius: 5px; border-bottom-right-radius: 0px;}
+    tbody tr td:first-child { border-top-left-radius: 5px; border-bottom-left-radius: 0px;}
+    tbody tr td:last-child { border-top-right-radius: 5px; border-bottom-right-radius: 0px;}
 
 
 </style>
@@ -17,6 +18,7 @@ tbody tr td:last-child { border-top-right-radius: 5px; border-bottom-right-radiu
 
 <main class="mt-10 pb-8">
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+        @include("alert")
         <div class="bg-white pb-4 px-4 rounded-md w-full">
             <div class="flex justify-between w-full pt-6 ">
                 <p class="ml-3">My Projects</p>
@@ -74,7 +76,7 @@ tbody tr td:last-child { border-top-right-radius: 5px; border-bottom-right-radiu
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="border text-center px-2 py-2">
+                            <td colspan="5" class="border text-center px-2 py-2">
                                 No exported video
                             </td>
                         </tr>
@@ -89,6 +91,7 @@ tbody tr td:last-child { border-top-right-radius: 5px; border-bottom-right-radiu
 @endsection
 
 @section('script_sections')
+<script src="{{ asset('vendor/fancybox/dist/jquery.fancybox.min.js') }}"></script>
 <script>
     var site_url = "{{ env('APP_URL') }}";
     var upload_resource_url = "{{ route('upload_resource') }}";
@@ -98,6 +101,7 @@ tbody tr td:last-child { border-top-right-radius: 5px; border-bottom-right-radiu
     var save_item_url = "{{ route('save_item') }}"
     
 </script>
+<script src="{{ asset('js/global.js') }}"></script>
 <script src="{{ asset('js/my_projects.js') }}"></script>
 
 @endsection

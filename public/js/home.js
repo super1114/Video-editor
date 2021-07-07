@@ -4,70 +4,40 @@ $.ajaxSetup({
     }
 });
 
-function _toggleClass(class_name, text="", status) {
-    if(status){
-        $("."+class_name).addClass("opacity-50");
-        $("."+class_name).addClass("cursor-not-allowed");
-    }else {
-        $("."+class_name).removeClass("opacity-50");
-        $("."+class_name).removeClass("cursor-not-allowed");
-    }
-    $("."+class_name).prop('disabled', status);
-    $("."+class_name).html(text);
-}
-var slider_count = 0;
-var play_index = 0;
-var selectedResource = "";
-var prevX = 0;
-var currX = 0;
-function getMousePos(canvas, evt) {
-    var rect = canvas.getBoundingClientRect();
-    return {
-      x: evt.clientX - rect.left,
-      y: evt.clientY - rect.top
-    };
-}
+
 var VIDEO_EDITOR = {
-    isPlaying: false,
+    
     startPlay: function (sort_items) {
-        var videoDom = document.getElementById("myVideo");
-        videoDom.src = site_url + "/" + sort_items[play_index].resource.path
-        videoDom.currentTime = 3;
-        videoDom.play();
-        videoDom.ontimeupdate = function(e) {
-            if(videoDom.currentTime>sort_items[play_index].i_end) {
-                videoDom.pause();
-                if(play_index==sort_items.length-1){ play_index=0; return; }
-                play_index++;
-                VIDEO_EDITOR.startPlay(sort_items);
-            }
-        }
-        //console.log(videoDom.currentTime);
-    },
-    togglePlay: function () {
-        console.log(this.isPlaying);
-        if(this.isPlaying){
-            this.isPlaying =  false;
+        //video.src = site_url + "/" + sort_items[play_index].resource.path
+        video.currentTime = curTimeSec;
+        //$("#seeker").css({"transform":video.currentTime*1.5+"300px;"});
+        $(".canvas").addClass("hidden");
+        video.play();
+        console.log(curPlayingItem);
+        video.ontimeupdate = function(e) {
+            curTimeSec = video.currentTime;
+            if(curTimeSec>curPlayingItem.slots[0].t_start+curPlayingItem.slots[0].duration){
+                setNewPlayingItem();
+                video.pause();
+
+                isPlaying =  false;
             var playing_icon = "<svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z' /><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 12a9 9 0 11-18 0 9 9 0 0118 0z' /></svg>";
             $(".preview").html(playing_icon);
+            }
+            $("#seeker").css({'transform' : 'translate(' + (video.currentTime*1.5)+"px" +', ' + "0px" + ')'});
+        }
+    },
+    togglePlay: function () {
+        if(isPlaying){
+            isPlaying =  false;
+            var playing_icon = "<svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z' /><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M21 12a9 9 0 11-18 0 9 9 0 0118 0z' /></svg>";
+            $(".preview").html(playing_icon);
+            video.pause();
         }else {
-            $.ajax({
-                url: save_item_url,
-                method:"post",
-                data: {
-                    items: items,
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function (data) {
-                    VIDEO_EDITOR.isPlaying = true;
-                    var pause_icon = "<svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z' /></svg>";
-                    $(".preview").html(pause_icon);
-                    var sort_items = items.sort(function(a, b) {return a.i_start-b.i_start});
-                    VIDEO_EDITOR.startPlay(sort_items);
-                    
-                }
-            })
-            
+            isPlaying = true;
+            var pause_icon = "<svg xmlns='http://www.w3.org/2000/svg' class='h-4 w-4' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z' /></svg>";
+            $(".preview").html(pause_icon);
+            VIDEO_EDITOR.startPlay(items);
         }
     },
     uploadResource: function(e) {
@@ -88,8 +58,9 @@ var VIDEO_EDITOR = {
                     _toggleClass("upload_btn", "upload", false);
                     var resource = data.resource; 
                     var origin_html = $(".resources").html().search("No resources")==-1 ? $(".resources").html() : "";
-                    $(".no_media_text").addClass("hidden");
                     $(".resources").html(data.resourceHtml+origin_html);
+                    $(".no_media_text").addClass("hidden");
+                    dragDropInit();
                     if(selectedResource!=""){
                         console.log(selectedResource);
                         selectedResource.removeClass("border-dashed border-1 border-blue-500");
@@ -100,18 +71,13 @@ var VIDEO_EDITOR = {
             }
         });
     },
-    initItemContainer: function() {
-        console.log(items);
-        console.log(max_dur);
-    },
+    
     init: function() {
         this.initPlugins();
         this.initHandlers();
     },
     initPlugins: function() {
-        console.log($('meta[name="csrf-token"]').attr('content'));
-        initRangeSlider();
-        VIDEO_EDITOR.initItemContainer();
+        
     },
     initHandlers: function() {
         
@@ -128,18 +94,24 @@ var VIDEO_EDITOR = {
             VIDEO_EDITOR.togglePlay();
         })
         $(".export_video").on("click", function(e) {
-            var sorted_items = items.sort(function(a, b) {return a.i_start-b.i_start});
+            //var sorted_items = items.sort(function(a, b) {return a.i_start-b.i_start});
+            _toggleClass("export_video", "Exporting", true);
             $.ajax({
                 url: export_video_url,
                 method: "post",
                 data: {
-                    items: sorted_items,
+                    //items: sorted_items,
+                    project_id: project_id,
                     _token: $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function(data) {
+                    _toggleClass("export_video", "Export", false);
+                    showMsg("OK", "Video Exported Successfully");
                     console.log(data);
                 },
                 error: function(data) {
+                    _toggleClass("export_video", "Export", false);
+                    showMsg("Error", "Video Exporting Failed");
 
                 }
             })
@@ -162,27 +134,6 @@ var VIDEO_EDITOR = {
         })
         VIDEO_EDITOR.repeatHandlers();
     },
-    addSliderHtml: function(resource) {
-        initRangeSlider();
-        $.ajax({
-            url: add_item_url,
-            method: "post",
-            data: {
-                items: items,
-                project_id: project_id,
-                new_item: resource,
-                _token: $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(data) {                
-                items = data.items;
-                max_dur = data.max_dur;
-                VIDEO_EDITOR.initItemContainer();
-            },
-            error: function(data, error) {
-
-            }
-        })
-    },
     repeatHandlers: function() {
         $(".each").on("click", function(e) {
             var target = $(e.target).closest(".each");
@@ -196,27 +147,6 @@ var VIDEO_EDITOR = {
         $(".each").on("mouseout", function (e) {
             var target = $(e.target).closest(".each");
             target.find(".badge").addClass("hidden");
-        })
-        
-        $(".del_res_btn").on("click", function(e) {
-            var resource = $(e.target).closest("div").data("resource");
-            $.ajax({
-                url:del_resource_url,
-                method: "post",
-                data: {
-                    id: resource.id,
-                    project_id: project_id,
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(data) {
-                    if(data.status=="success") {
-                        items = data.items;
-                        max_dur = data.max_dur;
-                        VIDEO_EDITOR.initItemContainer();
-                        $(e.target).closest("div").remove();
-                    }
-                }
-            })
         })
     }
 }

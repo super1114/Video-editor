@@ -18,12 +18,9 @@
     <!-- Styles -->
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet">
     <link href="{{ asset('css/components-v2.css') }}" rel="stylesheet">
-    <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
     
-    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/fancybox/dist/jquery.fancybox.min.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/range-slider/rangeSlider.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('vendor/range-slider/style.css') }}">
-    <link href="{{ asset('css/home.css') }}" rel="stylesheet">
+    
+    <!-- <link href="{{ asset('css/home.css') }}" rel="stylesheet"> -->
 
 
 
@@ -71,17 +68,12 @@
             </div>
         </div>
     </div>
-    <script src="{{ asset('js/app1.js') }}" defer></script>
-    <script src="{{ asset('js/components-v2.js') }}" defer></script>
-    <script
-      src="https://code.jquery.com/jquery-3.4.1.min.js"
-      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-      crossorigin="anonymous"
-    ></script>
+    <!-- <script src="{{ asset('js/components-v2.js') }}" defer></script> -->
+    <script src="{{ asset('js/jquery-3.4.1.min.js') }}"></script>
     
-    <script src="{{ asset('vendor/fancybox/dist/jquery.fancybox.min.js') }}"></script>
     
-    <script src="{{ asset('js/alpine.js') }}" defer></script>
+    
+    <!-- <script src="{{ asset('js/alpine.js') }}" defer></script> -->
     <script>
         function toggleModal () {
             const body = document.querySelector('body')
@@ -92,7 +84,6 @@
         }
     </script>
 
-    <script src="{{ asset('vendor/range-slider/rangeSlider.js') }}"></script>
     @yield('script_sections')
     
     {!! Toastr::message() !!}

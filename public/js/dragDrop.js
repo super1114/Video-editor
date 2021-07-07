@@ -1,9 +1,12 @@
-var dragItems = document.getElementsByClassName("eachRes");
-for(var i=0; i<dragItems.length; i++) {
-    dragItems[i].addEventListener("dragstart", dragStart);
-} 
 var curItem = "";
 var dragStarted = false;
+var dragItems = document.getElementsByClassName("eachRes");
+function dragDropInit() {
+    for(var i=0; i<dragItems.length; i++) {
+        dragItems[i].addEventListener("dragstart", dragStart);
+    }
+}
+
 function dragStart(e){
     dragStarted = true;
     curItem = e.target;
@@ -30,11 +33,17 @@ function drop(e) {
         },
         success: function(data) {
             items = data.items;
+            console.log(items);
+            //setNewPlayingItem();
+            console.log(items);
+            //setVideoScreen();
             max_dur = data.max_dur;
             addedItemHtml = data.addItemHtml;
             $(".drag_text").remove();
             $("#workspace").append(addedItemHtml);
             timeSlotAction();
+            initTimeSlotMoveHandler();
+            document.getElementById("source_video").src = site_url+items[0].resource.path;
         },
         error: function(data) {
 
@@ -45,13 +54,8 @@ function drop(e) {
 workspaceItem.addEventListener("drop", drop);
 
 
-function repeatHandlers() {
-    
-}
-
-
 $(document).ready(function(){
-    //repeatHandlers();
+    dragDropInit();
     $("#workspace").on("dragenter", function(e) {
         e.preventDefault();
         $(e.target).closest("#workspace").addClass("drop-over");

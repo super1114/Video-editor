@@ -2,6 +2,7 @@
 
 @section("styles")
 <link rel="stylesheet" type="text/css" href="{{asset('css/dragDrop.css')}}">
+<link rel="stylesheet" type="text/css" href="{{asset('vendor/canvas-video-player/demo/demo.css')}}">
 @endsection
 
 @section('content')
@@ -9,6 +10,7 @@
 <main class="mt-10 pb-8">
     <input type="file" name="file" id="upload_file" style="display:none"/>
     <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+        @include('alert')
         <div class="flex items-start justify-between">
             <h5 class="text-2xl font-bold leading-normal mt-0 mb-2 text-gray-800 w-5/6">
               {{$project_name}}
@@ -28,13 +30,14 @@
             <div class="grid grid-cols-1 gap-4 lg:col-span-2  ">
                 <!-- Actions panel -->
                 <section aria-labelledby="quick-links-title" class="p-2 flex items-center bg-gray-800 rounded-md">
-                    <div class="relative lg:h-96 rounded-lg bg-gray-800 overflow-hidden shadow divide-y divide-gray-200 sm:divide-y-0 sm:grid sm:grid-cols-1 sm:gap-px w-full flex items-center">
+                    <div class="relative h-60 min-h-full lg:h-96 rounded-lg bg-gray-800 overflow-hidden shadow divide-y divide-gray-200 sm:divide-y-0 sm:grid sm:grid-cols-1 sm:gap-px w-full flex items-center">
                         @if(count($items)>0)
-                        <video width="100%" id="myVideo"  class="lg:h-96">
-                            <source src="{{asset($items[0]->resource->path)}}" >
+                        <video width="100%" class="h-96 md:h-80 sr:h-80 video js-video" id="video_id">
+                            <source src="{{asset($items[0]->resource->path)}}" id="source_video">
                         </video>
+                        <canvas class="h-96 canvas js-canvas"></canvas>
                         @else
-                        <img src="{{asset('img/blank1.jpg')}}" />
+                        <!-- <img src="{{asset('img/blank1.jpg')}}" class="blank_image" /> -->
                         @endif
                     </div>
                 </section>
@@ -48,7 +51,7 @@
                             <div class="grid grid-cols-2 gap-4 resources">
                                 @forelse($resources as $resource)
                                     <div class="each m-1 shadow-lg relative cursor-pointer transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110" >
-                                        <img class="w-full eachRes" data-resource="{{$resource}}" src="{{asset($resource->thumbnail)}}" alt="" draggable="true"/>
+                                        <img class="w-full eachRes" data-resource="{{$resource}}" src="{{asset($resource->thumbnail)}}" alt=""/>
                                         <div class="hidden badge absolute top-0 right-0 bg-indigo-500 m-1 text-gray-200 p-1 px-2 text-xs font-bold rounded">    {{$resource->getTime()}}
                                         </div>
                                         <div class="info-box text-xs flex p-1 font-semibold text-gray-500 bg-gray-300">
@@ -90,7 +93,7 @@
             </button>
         </div>
         <div class="relative overflow-x-scroll px-5 pb-5 bg-gray-600 grid grid-rows-2 md:grid-rows-2 gap-1" id="workspace">
-            <div class="seeker absolute h-full left-5 w-0.5 bg-white z-50" id="seeker" style="cursor:grab;">
+            <div class="seeker absolute h-full w-0.5 bg-white z-50" id="seeker" style="cursor:grab; left: 20px;">
                 <svg width="12" height="14" viewBox="0 0 12 14" xmlns="http://www.w3.org/2000/svg" fill="white" class="sc-bkzqDD kETWwh absolute" style="left:-5px;">
                     <path d="M0 1.16667V7.67376C0 7.98888 0.127471 8.2906 0.353409 8.51026L5.18674 13.2093C5.63955 13.6496 6.36045 13.6496 6.81326 13.2093L11.6466 8.51026C11.8725 8.2906 12 7.98888 12 7.67376V1.16667C12 0.522335 11.4777 0 10.8333 0H1.16667C0.522335 0 0 0.522334 0 1.16667Z"></path>
                 </svg>
@@ -100,9 +103,9 @@
             </div>
             
             @forelse($items as $item)
-            <div class="relative text-white flex items-center justify-start time_slot_parent bg-gray-700 h-12" id="item_{{$item->id}}">
+            <div data-item="{{$item}}" class="relative text-white flex items-center justify-start time_slot_parent bg-gray-700 h-12" id="item_{{$item->id}}">
                 @foreach($item->slots()->orderBy('t_start')->get() as $slot)
-                <div id="slot_{{$slot->id}}" data-item="{{$slot}}" class="absolute flex items-center justify-start rounded-md time_slot" style="{{$slot->getWidth().$slot->getLeftStyle()}}">
+                <div id="slot_{{$slot->id}}" data-slot="{{$slot}}" class="absolute flex items-center justify-start rounded-md time_slot" style="{{$slot->getWidth().$slot->getLeftStyle()}}">
                     <img class="h-12 rounded-sm" src="{{$item->resource->thumbnail}}" alt="">
                     <div class="bg-gray-900 rounded-sm h-12 w-full"></div>    
                 </div>
@@ -123,6 +126,7 @@
 @endsection
 
 @section('script_sections')
+<script type="text/javascript" src="{{ asset('vendor/canvas-video-player/js/canvas-video-player.js') }}"></script>
 <script>
     var site_url = "{{ env('APP_URL') }}";
     var upload_resource_url = "{{ route('upload_resource') }}";
@@ -136,7 +140,8 @@
     var project_id = "{{ $project_id }}";
     var items = @json($items);
     var max_dur = "{{ $max_dur }}";
-    var save_item_url = "{{ route('save_item') }}"
+    var save_item_url = "{{ route('save_item') }}";
+
     
 
     //variables in js files.
@@ -145,11 +150,41 @@
     var curTimeSlot="";
     var selectedItem="";
     var curTimeSec = 0;
+    var slider_count = 0;
+    var play_index = 0;
+    var selectedResource = "";
+    var prevX = 0;
+    var currX = 0;
+    var curMovingItemElement = "";
+    var curMovingSlotElement = "";
+    var isPlaying =  false;
+
+    var video = document.getElementById("video_id");
+    video.currentTime = 100;
+
+    // current video information
+    var videoSrc = "";
+    var cur_v_pos = 0;
+    var curPlayingItem = items[0];
+
+    var canvasVideo = new CanvasVideoPlayer({
+        videoSelector: '.js-video',
+        canvasSelector: '.js-canvas',
+        framesPerSecond: 25,
+        audio: false,
+        hideVideo: false, // should script hide the video element
+        autoplay: false,
+        loop: false
+    });
+
+    //global functions
+
 </script>
-<script src="{{ asset('js/home.js') }}"></script>
+<script src="{{ asset('js/global.js') }}"></script>
 
 <script src="{{ asset('js/canvas.js') }}"></script>
 <script src="{{ asset('js/workspace.js') }}"></script>
 <script src="{{ asset('js/dragDrop.js') }}"></script>
+<script src="{{ asset('js/home.js') }}"></script>
 
 @endsection
